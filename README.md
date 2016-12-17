@@ -7,8 +7,8 @@ PROJECT DESCRIPTION:
 ------------------------
 A Client for Syncing 2 Directories:
 
-### Usage: ###
-  sync /path/to/directory1 111.222.123.123:/path/to/directory2 [-OPTION: deleted file handeling]
+### Usage: ###i
+>sync /path/to/directory1 111.222.123.123:/path/to/directory2 [-OPTION: deleted file handeling]
 
 ### Procedure: ###
     Inform REMOTE of sync
@@ -37,8 +37,8 @@ A Client for Syncing 2 Directories:
     Done :-)
 
 ### Features: ###
-    simultaneous send & recieve
-    lock file in dir to prevent two clients from syncing simultaneous (prevent race conditions)
+simultaneous send & recieve
+lock file in dir to prevent two clients from syncing simultaneous (prevent race conditions)
 
 ### Command line Parameters: ###
     -dH   --deleteOnHOST
@@ -53,17 +53,17 @@ A Client for Syncing 2 Directories:
       sync directories inside directories
 
 ### Cases: ###
-    *File has same signature on both PC
-      -> Do Nothing 
-    *File has different signature on PCs
-      -> Copy the newer one to the other PC1 
-    *File is not existing on one PC
-      -> depends on command line Parameter, default: ask for each file (yes, no, yes to all, yes to current directory)
+*File has same signature on both PC
+  -> Do Nothing 
+*File has different signature on PCs
+  -> Copy the newer one to the other PC1 
+*File is not existing on one PC
+  -> depends on command line Parameter, default: ask for each file (yes, no, yes to all, yes to current directory)
 
 
 ### BONUS GOALS: ###
-  -Command Line Parser
-  -Logging Support (e.g. syslog)
-  -IPv4 and IPv6 Support
+- Command Line Parser
+- Logging Support (e.g. syslog)
+- IPv4 and IPv6 Support
 
 
