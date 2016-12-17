@@ -1,7 +1,9 @@
 
 REMOTE FILE SYNC
 ======================
-This is a University Project, 
+This is a University Project, no OpenSource Licenze. But here should not be any relevant new code for this world anyway.
+In the End, this would be a kind of simple rsync clone
+
 
 PROJECT DESCRIPTION:
 ------------------------
