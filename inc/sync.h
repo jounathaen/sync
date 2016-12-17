@@ -37,7 +37,7 @@ int createMD5(const char * filename, unsigned char c[MD5_DIGEST_LENGTH]);
 void printFileList(fileList fL);
 
 /*
-  Function  that is executed for every file, the filewalker walks through
+  Function that is executed for every file, the filewalker walks through
 */
 int createFileList1(const char *name, const struct stat *status, int type); 
 

@@ -78,6 +78,7 @@ int main(int argc, char** argv){
 
   if (ftw("." , createFileList1, 20) == -1) {
       printf("nftw error\n");
+      return -1;
   }
   fileList1.length = fileList1.index;
   fileList1.entry = (fileListEntry*) realloc(fileList1.entry, fileList1.length * sizeof(fileListEntry));
