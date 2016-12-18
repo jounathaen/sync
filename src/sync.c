@@ -26,68 +26,105 @@ int createMD5(const char * filename, unsigned char c[MD5_DIGEST_LENGTH]){
 }
 
 
-int createFileList1(const char *name, const struct stat *status, int type) {
-  if(fileList1.index>=fileList1.length){
-    fileListEntry *newpointer;
-    newpointer = (fileListEntry*) realloc((void*) fileList1.entry, (fileList1.length + INCR_STEP_SIZE)*sizeof(fileListEntry));
+void fileListInit(fileList *newFileList){
+  newFileList->entry = (fileListEntry*)malloc(INCR_STEP_SIZE*sizeof(fileListEntry));
+  newFileList->length = INCR_STEP_SIZE;
+  newFileList->index = 0;
+}
+
+
+void setActiveList (fileList *newFileList){
+  activeFileList = newFileList;
+}
+
+
+int handleFile(const char *name, const struct stat *status, int type) {
+  /* expand the file list, when it is full */
+  if(activeFileList->index +1 >= activeFileList->length){
+    fileListEntry *newpointer = (fileListEntry*) realloc((void*) activeFileList->entry, (activeFileList->length + INCR_STEP_SIZE)*sizeof(fileListEntry));
     if (!newpointer){
       printf("ERROR while reallocating memory");
       return -1;
     }
-    fileList1.entry = newpointer;
-    fileList1.length += INCR_STEP_SIZE;
+    activeFileList->entry = newpointer;
+    activeFileList->length += INCR_STEP_SIZE;
   }
+  /* Folders are not of interest */
   if(type == FTW_NS)
     return 0;
 
+  /* add files to the filelist */
   if(type == FTW_F) {
-    /* add files to the filelist */
-    strcpy(fileList1.entry[fileList1.index].filename, name);
-    fileList1.entry[fileList1.index].timestamp = status->st_mtime;
-    createMD5(name, fileList1.entry[fileList1.index].filehash);
+    strcpy(activeFileList->entry[activeFileList->index].filename, name);
+    activeFileList->entry[activeFileList->index].timestamp = status->st_mtime;
+    createMD5(name, activeFileList->entry[activeFileList->index].filehash);
 
-    fileList1.index++;
+    activeFileList->index++;
   }
   return 0;
 }
 
 
-void printFileList(fileList fL){
+int createFileList(const char* filepath, fileList *fL){
+  setActiveList(fL);
+  printf("filepath: %s\n", filepath);
+  if (ftw(filepath, handleFile, 20) == -1) {
+    printf("nftw error\n");
+    return -1;
+  }
+  fL->length = fL->index;
+  printf("created FileList\n");
+
+  /* fileListEntry *newpointer = (fileListEntry*) realloc(&fL->entry, fL->length * sizeof(fileListEntry)); */
+  /* if (newpointer==NULL){ */
+  /*   printf("ERROR while shrinkening memory of fileList"); */
+  /*   return -1; */
+  /* } */
+  /* fL->entry = newpointer; */
+  /* printf("mem reallocated\n"); */
+  return 0;
+}
+
+
+
+void printFileList(fileList *fL){
   char buff[20];
-  for (unsigned int i = 0; i< fL.length; i++){
+  for (unsigned int i = 0; i< fL->length; i++){
     /* the time  */
-    strftime(buff, sizeof(buff), "%b %d %H:%M", (struct tm*) localtime (&fL.entry[i].timestamp));
-    printf("%-20s\t", buff);
+    strftime(buff, sizeof(buff), "%b %d %H:%M", (struct tm*) localtime (&fL->entry[i].timestamp));
+    printf("%-5s\t", buff);
     /* the name */
-    printf("%-40s\t", fL.entry[i].filename);
+    printf("%-40s\t", fL->entry[i].filename);
     /* the hash */
-    for(int j = 0; j < MD5_DIGEST_LENGTH; j++) printf("%02x", fL.entry[i].filehash[j]);
+    for(int j = 0; j < MD5_DIGEST_LENGTH; j++) printf("%02x", fL->entry[i].filehash[j]);
     printf("\n");
   }
+  printf("sizeof of List on Memory: %d\n", (int) malloc_usable_size((void*)fL->entry));
+  printf("length of file list: %d\n", fL->length);
+  printf("index of file list: %d\n", fL->index);
 }
 
 
 int main(int argc, char** argv){
   /* printf("Sizeof fileListEntry: %d \n", sizeof(fileListEntry) ); */
 
+  printf ("===============================\n");
+  fileListInit(&fileList1);
 
-  fileList1.entry = (fileListEntry*)malloc(INCR_STEP_SIZE*sizeof(fileListEntry));
-  fileList1.length = INCR_STEP_SIZE;
-  fileList1.index = 0;
+  createFileList(".", &fileList1);
+  printFileList(&fileList1);
 
 
-  if (ftw("." , createFileList1, 20) == -1) {
-      printf("nftw error\n");
-      return -1;
-  }
-  fileList1.length = fileList1.index;
-  fileList1.entry = (fileListEntry*) realloc(fileList1.entry, fileList1.length * sizeof(fileListEntry));
+  printf ("===============================\n");
 
-  printFileList(fileList1);
+  fileListInit(&fileList2);
+  createFileList("./src", &fileList2);
+  printFileList(&fileList2);
 
-  printf("sizeof of List on Memory: %d\n", (int) malloc_usable_size((void*)fileList1.entry));
-  printf("length of file list: %d", fileList1.length);
+
+
   free(fileList1.entry);
+  free(fileList2.entry);
   /* use ftw to walk through file list  */
   /* use realloc to create dynamical growing lists  */
   /* use openssh to md5 the files  */
