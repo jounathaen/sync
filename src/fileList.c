@@ -132,37 +132,37 @@ enum ComparisionReturnTypes compareEntries(fileListEntry *entry1, fileListEntry 
 
 
 void createFileListToSend(fileList * resultingList, fileList * hostFiles, fileList * remoteFiles){
-  printf("Creatinig filesToSend List\n ======================\n");
+  /* printf("Creatinig filesToSend List\n ======================\n"); */
   setActiveList(resultingList);
   for (int i = 0; i < hostFiles->length; i++){
     for (int j = 0; j < remoteFiles->length; j++){
-      printf("Index: %d \t", resultingList->index);
-      printf("comparing %s and %s\t", &hostFiles->entry[i].filename, &remoteFiles->entry[j].filename);
+      /* printf("Index: %d \t", resultingList->index); */
+      /* printf("comparing %s and %s\t", &hostFiles->entry[i].filename, &remoteFiles->entry[j].filename); */
 
       switch (compareEntries(&hostFiles->entry[i], &remoteFiles->entry[j])){
       case FilesEqual:
       case File2Newer:
-        printf("file %s is newer or equal\n", &remoteFiles->entry[j].filename);
+        /* printf("file %s is newer or equal\n", &remoteFiles->entry[j].filename); */
         /* doesn't has to be added to list */
         goto nextfile;
       case File1Newer:
-        printf("adding file %s to the list\n", &remoteFiles->entry[j].filename);
+        /* printf("adding file %s to the list\n", &remoteFiles->entry[j].filename); */
         /* add file to resuling list */
         addFile(resultingList, resultingList->index, hostFiles->entry[i].filename, hostFiles->entry[i].timestamp);
         resultingList->index++;
         goto nextfile;
       case FilesNotTheSame:
-        printf("Files are different\n");
+        /* printf("Files are different\n"); */
         /* try next file in remoteFiles list */
         break;
       case GeneralConfusion:
-        printf("Error: You really have two files with same Name and Time, but different content???\n");
+        /* printf("Error: You really have two files with same Name and Time, but different content???\n"); */
         goto nextfile;
         break;
 
       }
     }
-    printf("File not found on Remote, has to send\n");
+    /* printf("File not found on Remote, has to send\n"); */
     addFile(resultingList, resultingList->index, hostFiles->entry[i].filename, hostFiles->entry[i].timestamp);
     resultingList->index++;
 
