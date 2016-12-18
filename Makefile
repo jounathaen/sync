@@ -7,7 +7,7 @@ LIBS := -lssl -lcrypto
 GXX := g++
 LD := g++
 
-CXXFLAGS := -Wall
+CXXFLAGS := -Wall -std=c++11
 
 SRC_DIR := src
 INC_DIRS := -Iinc
@@ -26,9 +26,9 @@ OBJS := $(addsuffix .o,$(BUILD_BASE))
 .SUFFIXES:
 .SECONDARY:
 
-include $(DEPS)
-
 all: $(DEPS) $(TARGET)
+
+include $(DEPS)
 
 build:
 				mkdir -p $@
