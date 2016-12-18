@@ -2,7 +2,7 @@ TARGET := sync
 
 LDFLAGS :=
 
-LIBS := -lssl -lcrypto
+LIBS := -lcrypto
 
 CC := gcc
 GXX := g++
@@ -41,11 +41,11 @@ $(TARGET): $(OBJS) | build
 
 $(BUILD_DIR)/%.d: $(SRC_DIR)/%.c | build
 				@echo "----> dependency $<"
-				$(CC)  $(INC_DIRS) -MM -o $@ $< 
+				$(CC) $(CCFLAGS) $(INC_DIRS) -MM -MT$(@:.d=.o)  -o $@ $< 
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | build
 				@echo "----> compiling $<"
-				$(CC) $(CXXFLAGS) $(INC_DIRS) -c $< -o $@
+				$(CC) $(CCFLAGS) $(INC_DIRS) -c $< -o $@
 
 $(BUILD_DIR)/%.d: $(SRC_DIR)/%.cpp | build
 				@echo "----> dependency $<"
@@ -57,8 +57,6 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | build
 
 clean:
 				@echo "----> Cleaning up"
-				rm -rf src/*.o
-				rm -rf src/*.d
 				rm -rf $(BUILD_DIR) $(TARGET)
 
 show:
