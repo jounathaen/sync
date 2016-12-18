@@ -4,10 +4,12 @@ LDFLAGS :=
 
 LIBS := -lssl -lcrypto
 
+CC := gcc
 GXX := g++
 LD := g++
 
-CXXFLAGS := -Wall -std=c++11
+CCFLAGS := -std=c99
+CXXFLAGS := -Wall
 
 SRC_DIR := src
 INC_DIRS := -Iinc
@@ -39,11 +41,11 @@ $(TARGET): $(OBJS) | build
 
 $(BUILD_DIR)/%.d: $(SRC_DIR)/%.c | build
 				@echo "----> dependency $<"
-				$(GXX) $(CXXFLAGS) $(INC_DIRS) -MM -MT$(@:.d=.o) -o $@ $<
+				$(CC)  $(INC_DIRS) -MM -o $@ $< 
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | build
 				@echo "----> compiling $<"
-				$(GXX) $(CXXFLAGS) $(INC_DIRS) -c $< -o $@
+				$(CC) $(CXXFLAGS) $(INC_DIRS) -c $< -o $@
 
 $(BUILD_DIR)/%.d: $(SRC_DIR)/%.cpp | build
 				@echo "----> dependency $<"
@@ -64,6 +66,7 @@ show:
 	@echo 'SRCS_C      :' $(SRCS_C)
 	@echo 'SRCS_CPP    :' $(SRCS_CPP)
 	@echo 'SOURCE_BASE :' $(SRCS_BASE)
+	@echo 'INCL_DIRS   :' $(INC_DIRS)
 	@echo 'BUILD_BASE  :' $(BUILD_BASE)
 	@echo 'DEPS        :' $(DEPS)
 	@echo 'OBJS        :' $(OBJS)
