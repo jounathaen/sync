@@ -172,7 +172,7 @@ void createFileListToSend(fileList * resultingList, fileList * hostFiles, fileLi
   fileListEntry *newpointer = (fileListEntry*) realloc((void*) resultingList->entry, resultingList->index * sizeof(fileListEntry));
   if (newpointer==NULL){
     printf("ERROR while shrinkening memory of fileList");
-    return -1;
+    return;
   }
   resultingList->entry = newpointer;
   resultingList->length = resultingList->index;
