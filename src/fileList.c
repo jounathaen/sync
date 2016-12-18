@@ -28,10 +28,11 @@ int createMD5(const char * filename, unsigned char c[MD5_DIGEST_LENGTH]){
 int compareMD5(const unsigned char * hash1, const unsigned char * hash2){
   for(int i = 0; i < MD5_DIGEST_LENGTH; i++){
     if(hash1[i] != hash2[i])
-      return 0;
+      return -1;
   }
-  return 1;
+  return 0;
 }
+
 
 void fileListInit(fileList *newFileList){
   newFileList->entry = (fileListEntry*)malloc(INCR_STEP_SIZE*sizeof(fileListEntry));
@@ -46,32 +47,36 @@ void setActiveList (fileList *newFileList){
 
 
 int handleFile(const char *name, const struct stat *status, int type) {
-  /* expand the file list, when it is full */
-  if(activeFileList->index >= activeFileList->length){
-    fileListEntry *newpointer = (fileListEntry*) realloc((void*) activeFileList->entry, (activeFileList->length + INCR_STEP_SIZE)*sizeof(fileListEntry));
+  /* add only files to the filelist */
+  if(type == FTW_F) {
+    if(addFile(activeFileList, activeFileList->index, name, status->st_mtime))
+      return -1;
+    activeFileList->index++;
+  }
+  return 0;
+}
+
+
+int addFile(fileList *fL, const unsigned int index, const char *name, time_t timestamp){
+  if(index == fL->length){
+    fileListEntry *newpointer = (fileListEntry*) realloc((void*) fL->entry, (fL->length + INCR_STEP_SIZE)*sizeof(fileListEntry));
     if (!newpointer){
       printf("ERROR while reallocating memory");
       return -1;
     }
-    activeFileList->entry = newpointer;
-    activeFileList->length += INCR_STEP_SIZE;
+    fL->entry = newpointer;
+    fL->length += INCR_STEP_SIZE;
+  }else if (index > fL->length){
+    printf("ERROR: writing to position outside of List\n");
   }
-  /* Folders are not of interest */
-  if(type == FTW_NS)
-    return 0;
 
-  /* add files to the filelist */
-  if(type == FTW_F) {
-    if(strlen(name) >= FILENAME_MAX_SIZE){
-      printf("ERROR: Filename %s too long\n", name);
-      return -1;
-    }
-    strcpy(activeFileList->entry[activeFileList->index].filename, name);
-    activeFileList->entry[activeFileList->index].timestamp = status->st_mtime;
-    createMD5(name, activeFileList->entry[activeFileList->index].filehash);
-
-    activeFileList->index++;
+  if(strlen(name) >= FILENAME_MAX_SIZE){
+    printf("ERROR: Filename %s too long\n", name);
+    return -1;
   }
+  strcpy(fL->entry[index].filename, name);
+  fL->entry[index].timestamp = timestamp;
+  createMD5(name, fL->entry[index].filehash);
   return 0;
 }
 
@@ -101,10 +106,11 @@ int createFileList(const char* filepath, fileList *fL){
 }
 
 
-enum ComparisionReturnTypes CompareEntries(fileListEntry *entry1, fileListEntry * entry2){
-  if(strcmp(entry1->filename, entry2->filename) == 0){
+enum ComparisionReturnTypes compareEntries(fileListEntry *entry1, fileListEntry * entry2){
+  /* extract filename from dirname */
+  if(strcmp(strrchr(entry1->filename, '/'), strrchr(entry2->filename, '/')) == 0){
     /* Filenames are the same  */
-    if (compareMD5(entry1->filehash, entry2->filehash)){
+    if (compareMD5(entry1->filehash, entry2->filehash) == 0){
       /* hashes are the same */
       return FilesEqual;
     }
@@ -125,6 +131,56 @@ enum ComparisionReturnTypes CompareEntries(fileListEntry *entry1, fileListEntry 
 }
 
 
+void createFileListToSend(fileList * resultingList, fileList * hostFiles, fileList * remoteFiles){
+  printf("Creatinig filesToSend List\n ======================\n");
+  setActiveList(resultingList);
+  for (int i = 0; i < hostFiles->length; i++){
+    for (int j = 0; j < remoteFiles->length; j++){
+      printf("Index: %d \t", resultingList->index);
+      printf("comparing %s and %s\t", &hostFiles->entry[i].filename, &remoteFiles->entry[j].filename);
+
+      switch (compareEntries(&hostFiles->entry[i], &remoteFiles->entry[j])){
+      case FilesEqual:
+      case File2Newer:
+        printf("file %s is newer or equal\n", &remoteFiles->entry[j].filename);
+        /* doesn't has to be added to list */
+        goto nextfile;
+      case File1Newer:
+        printf("adding file %s to the list\n", &remoteFiles->entry[j].filename);
+        /* add file to resuling list */
+        addFile(resultingList, resultingList->index, hostFiles->entry[i].filename, hostFiles->entry[i].timestamp);
+        resultingList->index++;
+        goto nextfile;
+      case FilesNotTheSame:
+        printf("Files are different\n");
+        /* try next file in remoteFiles list */
+        break;
+      case GeneralConfusion:
+        printf("Error: You really have two files with same Name and Time, but different content???\n");
+        goto nextfile;
+        break;
+
+      }
+    }
+    printf("File not found on Remote, has to send\n");
+    addFile(resultingList, resultingList->index, hostFiles->entry[i].filename, hostFiles->entry[i].timestamp);
+    resultingList->index++;
+
+  nextfile:;
+
+  }
+  fileListEntry *newpointer = (fileListEntry*) realloc((void*) resultingList->entry, resultingList->index * sizeof(fileListEntry));
+  if (newpointer==NULL){
+    printf("ERROR while shrinkening memory of fileList");
+    return -1;
+  }
+  resultingList->entry = newpointer;
+  resultingList->length = resultingList->index;
+  resultingList->index = 0;
+
+}
+
+
 void printFileList(fileList *fL){
   char buff[20];
   for (unsigned int i = 0; i< fL->length; i++){
@@ -141,4 +197,3 @@ void printFileList(fileList *fL){
   printf("length of file list: %d\n", fL->length);
   printf("index of file list: %d\n", fL->index);
 }
-

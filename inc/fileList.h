@@ -9,6 +9,7 @@
 #include <time.h>       // for timestamps
 #include <sys/stat.h>   // for file stats
 #include <openssl/md5.h>// for the md5 algorithm
+#include <libgen.h>     // for basename
 
 #define INCR_STEP_SIZE 32
 #define FILENAME_MAX_SIZE 256-sizeof(time_t)-MD5_DIGEST_LENGTH*sizeof(unsigned char)
@@ -44,7 +45,7 @@ enum ComparisionReturnTypes{
 int createMD5(const char * filename, unsigned char c[MD5_DIGEST_LENGTH]);
 
 /*
-  compares two MD5 Hashes, returns 1 if equal, else 0
+  compares two MD5 Hashes, returns 0 if equal, else -1 
  */
 int compareMD5(const unsigned char *hash1, const unsigned char *hash2);
 
@@ -59,9 +60,15 @@ void fileListInit(fileList *newFileList);
 void setActiveList (fileList *newFileList);
 
 /*
-  Function that is executed for every file, the filewalker walks through
+  Function that is executed for every file, the filewalker walks through.
+  When 'type' is a file, it gets added to activeFileList.
 */
 int handleFile(const char *name, const struct stat *status, int type); 
+
+/*
+  adds the file 'name' with 'timestamp' to the fileList fL at index. 
+ */
+int addFile(fileList *fL, const unsigned int index, const char *name, time_t timestamp);
 
 /*
   creates a file list from the given filepath and stores it in fL
@@ -71,7 +78,12 @@ int createFileList(const char* filepath, fileList *fL);
 /*
   Compares two fileListEntries. returns ComparisionReturnTypes. Use for comparing two lists
  */
-enum ComparisionReturnTypes CompareEntries(fileListEntry *entry1, fileListEntry * entry2);
+enum ComparisionReturnTypes compareEntries(fileListEntry *entry1, fileListEntry * entry2);
+
+/*
+  Creates a list of Files which are notexistent on remotefiles and stores it into resultingList
+ */
+void createFileListToSend(fileList * resultingList, fileList * hostFiles, fileList * remoteFiles);
 
 /*
   Printing out the File List (for Debugging)
