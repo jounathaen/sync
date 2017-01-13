@@ -1,11 +1,66 @@
 #include "sync.h"
 
 
+void printUsage() {
+  printf("Usage: sync [OPTIONS] path/to/local/directory IPADDRESS:/path/to/remote/directory\n");
+}
 
 int main(int argc, char** argv){
+
+  // COMMAND LINE PARSING
+  int c;
+  struct option longopts[] = {
+    { "delete",    required_argument, NULL, 'd' },
+    { "recursive", no_argument,       NULL, 'r' },
+    { "help",      no_argument,       NULL, 'h' },
+    { 0, 0, 0, 0 }
+  };
+
+  while ((c = getopt_long(argc, argv, "d:rh", longopts, NULL)) != -1) {
+    switch (c) {
+    case 'd':
+      switch (optarg[0]){
+      case 'a':
+      case 'A':
+        missingOptions = ask;
+        break;
+      case 'h':
+      case 'H':
+        missingOptions = deleteOnHost;
+        break;
+      case 'r':
+      case 'R':
+        missingOptions = deleteOnRemote;
+        break;
+      case 'm':
+      case 'M':
+        missingOptions = mergeEverything;
+        break;
+      default:
+        printf("Error: unknown option for --delete\n");
+        return -1;
+      }
+      break;
+    case 'r':
+      recoursivelySyncing = 1;
+      break;
+    case 'h':
+      print_usage();
+      return 0;
+    default:
+      printf("character was %c\n", c);
+    }
+  }
+
+  /* printf("\nargv:\n"); */
+  /* for (int i = 0; i < argc; i++){ */
+  /*   printf("%s\n", argv[i]); */
+  /* } */
+  /* return 0; */
+
   /* printf("Sizeof fileListEntry: %d \n", sizeof(fileListEntry) ); */
 
-  printf ("\nFilelist3:\n");
+  printf ("\nFilelist1:\n");
   printf ("===============================\n");
   fileListInit(&ownFiles);
 
