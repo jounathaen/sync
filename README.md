@@ -43,7 +43,7 @@ simultaneous send & recieve
 lock file in dir to prevent two clients from syncing simultaneous (prevent race conditions)
 
 ### Command line Parameters: ###
-    -d   --delete [[OPTION]]
+    -d   --delete [OPTION]
     OPTION is:
       h, host: 
         don't ask, delete all files on HOST, when these files are not present on REMOTE
