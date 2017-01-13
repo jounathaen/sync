@@ -45,7 +45,7 @@ int main(int argc, char** argv){
       recoursivelySyncing = 1;
       break;
     case 'h':
-      print_usage();
+      printUsage();
       return 0;
     default:
       printf("character was %c\n", c);
@@ -77,7 +77,7 @@ int main(int argc, char** argv){
 
 
   fileListInit(&filesToTransfer);
-  createFileListToSend(&filesToTransfer, &fileList2, &ownFiles);
+  createFileListToSend(&filesToTransfer, &ownFiles, &fileList2 );
   /* printf("md5hash return is %d\n", compareMD5(ownFiles.entry[0].filehash, ownFiles.entry[0].filehash)); */
   /* if () */
   printf ("\nFiles to send:\n");
