@@ -53,7 +53,7 @@ lock file in dir to prevent two clients from syncing simultaneous (prevent race 
         don't delete anything, files that are not present on HOST will get copied from REMOTE and vice versa
       a, ask:
         ask for every file, to remove on HOST/REMOTE or keep both (DEFAULT OPTION)
-    -r    --recoursively
+    -r    --recursive
       sync directories inside directories
 
 ### Cases: ###
