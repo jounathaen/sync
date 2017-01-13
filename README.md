@@ -43,14 +43,16 @@ simultaneous send & recieve
 lock file in dir to prevent two clients from syncing simultaneous (prevent race conditions)
 
 ### Command line Parameters: ###
-    -dH   --deleteOnHOST
-      don't ask, delete all files on HOST, when these files are not present on REMOTE
-    -dR   --deleteOnREMOTE
-      don't ask, delete all files on REMOTE, when these files are not present on HOST
-    -mE   --mergeEverything
-      don't delete anything, files that are not present on HOST will get copied from REMOTE and vice versa
-    -A    --ask
-      ask for every file, to remove on HOST/REMOTE or keep both (DEFAULT OPTION)
+    -d   --delete [][OPTION]]
+    OPTION is:
+      h, host: 
+        don't ask, delete all files on HOST, when these files are not present on REMOTE
+      r, remote: 
+        don't ask, delete all files on REMOTE, when these files are not present on HOST
+      m, merge: 
+        don't delete anything, files that are not present on HOST will get copied from REMOTE and vice versa
+      a, ask:
+        ask for every file, to remove on HOST/REMOTE or keep both (DEFAULT OPTION)
     -r    --recoursively
       sync directories inside directories
 
