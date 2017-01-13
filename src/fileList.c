@@ -101,7 +101,6 @@ int createFileList(const char* filepath, fileList *fL){
   fL->entry = newpointer;
   fL->length = fL->index;
   fL->index = 0;
-  printf("mem reallocated\n");
   return 0;
 }
 
