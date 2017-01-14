@@ -10,7 +10,7 @@ PROJECT DESCRIPTION:
 A Client for Syncing 2 Directories:
 
 ### Usage: ###
-    sync /path/to/directory1 111.222.123.123:/path/to/directory2 [-OPTION: deleted file handeling]
+    sync /path/to/directory1 111.222.123.123/path/to/directory2 [-OPTION: deleted file handeling]
 
 ### Procedure: ###
     Inform REMOTE of sync
