@@ -37,7 +37,7 @@ build:
 
 $(TARGET): $(OBJS) | build
 				@echo "----> Building	 $@"
-				$(LD) $(LDFLAGS) -o $@ $(filter-out $(BUILD_DIR)/$@.o, $(OBJS)) $(LIBS)
+				$(LD) $(LDFLAGS) -o $@ $(filter-out $(BUILD_DIR)/$(filter-out $@, $(TARGET)).o, $(OBJS)) $(LIBS)
 
 $(BUILD_DIR)/%.d: $(SRC_DIR)/%.c | build
 				@echo "----> dependency $<"
