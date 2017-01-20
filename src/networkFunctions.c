@@ -1,6 +1,6 @@
 #include "networkFunctions.h"
 
-int createSocketListen() {
+int createSocketListen(const char* portnum) {
   int s=-1;
 	/* const int yes=1; */
 
@@ -9,7 +9,7 @@ int createSocketListen() {
   hints.ai_family = AF_UNSPEC;
   hints.ai_socktype = SOCK_STREAM;
 	hints.ai_flags = AI_PASSIVE | AI_ALL; // TODO not only use local IP
-  if (getaddrinfo("::0", PORTNUM, &hints, &addresses) != 0) {
+  if (getaddrinfo("::0", portnum, &hints, &addresses) != 0) {
     perror("getaddrinfo");
     return 1;
   }
@@ -39,7 +39,7 @@ int createSocketListen() {
 }
 
 
-int createSocketSending() {
+int createSocketSending(const char* ipaddr, const char* portnum) {
   // TODO hand over the address
   int s=-1;
 	/* const int yes=1; */
@@ -50,7 +50,7 @@ int createSocketSending() {
   hints.ai_flags = AI_ALL;
   hints.ai_protocol = 0;          /* Any protocol */
 
-  if (getaddrinfo("::1", PORTNUM, &hints, &addresses) != 0) {
+  if (getaddrinfo(ipaddr, portnum, &hints, &addresses) != 0) {
     printf("getaddrinfo");
     return 1;
   }
@@ -109,8 +109,6 @@ void recieveList(int sock){
 
 
 void recieveFile(int sock){
-  // TODO Change this back!
-  /* int filesize = 10000; */
   unsigned long int filesize = 0;
 	recv(sock,&filesize,sizeof(filesize),0);
   printf("recieved size: %ld\n", filesize);

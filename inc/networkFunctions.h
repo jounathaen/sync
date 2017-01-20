@@ -15,16 +15,15 @@
 
 
 
-#define PORTNUM "1234"
 struct addrinfo hints;
 struct addrinfo *addresses, *p;
 
 
 // create and connect to TCP socket
-int createSocketListen();
+int createSocketListen(const char* portnum);
 
 // create a socet to send
-int createSocketSending();
+int createSocketSending(const char* ipaddr, const char* portnum);
 
 
 int recieveBuf(int sock);
