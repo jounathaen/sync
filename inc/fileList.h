@@ -12,13 +12,14 @@
 #include <libgen.h>     // for basename
 
 #define INCR_STEP_SIZE 32
-#define FILENAME_MAX_SIZE 256-sizeof(time_t)-MD5_DIGEST_LENGTH*sizeof(unsigned char)
+#define FILENAME_MAX_SIZE 256-sizeof(time_t)-MD5_DIGEST_LENGTH*sizeof(unsigned char)-sizeof(unsigned long int)
 
 
 typedef struct fileListEntry{
   char filename[FILENAME_MAX_SIZE];
   unsigned char filehash[MD5_DIGEST_LENGTH];
   time_t timestamp;
+  unsigned long int filesize;
 }fileListEntry;
 
 typedef struct fileList{
@@ -68,7 +69,7 @@ int handleFile(const char *name, const struct stat *status, int type);
 /*
   adds the file 'name' with 'timestamp' to the fileList fL at index. 
  */
-int addFile(fileList *fL, const unsigned int index, const char *name, time_t timestamp);
+int addFile(fileList *fL, const unsigned int index, const char *name, time_t timestamp, int size);
 
 /*
   creates a file list from the given filepath and stores it in fL
@@ -89,5 +90,7 @@ void createFileListToSend(fileList * resultingList, fileList * hostFiles, fileLi
   Printing out the File List (for Debugging)
 */
 void printFileList(fileList *fL);
+
+// TODO deletefiles
 
 #endif //FILELIST_H
