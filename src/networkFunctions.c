@@ -2,9 +2,7 @@
 
 int createSocketListen(const char* portnum) {
   int s=-1;
-	/* const int yes=1; */
 
-  //TODO make shure it works with IPv6
   memset(&hints, 0, sizeof(struct addrinfo));
   hints.ai_family = AF_UNSPEC;
   hints.ai_socktype = SOCK_STREAM;
@@ -19,10 +17,6 @@ int createSocketListen(const char* portnum) {
       perror("client: socket");
       continue;
     }
-		/* if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) { */
-		/* 	perror("setsockopt"); */
-		/* 	exit(1); */
-		/* } */
 		if (bind(s, p->ai_addr, p->ai_addrlen) == -1) {
 			close(s);
 			perror("server: bind");
@@ -40,9 +34,7 @@ int createSocketListen(const char* portnum) {
 
 
 int createSocketSending(const char* ipaddr, const char* portnum) {
-  // TODO hand over the address
   int s=-1;
-	/* const int yes=1; */
 
   memset(&hints, 0, sizeof(struct addrinfo));
   hints.ai_family = AF_UNSPEC;
@@ -79,6 +71,7 @@ int recieveBuf(int sock) {
   printf("Buffer:\n %s\n", buff);
 	return 0;
 }
+
 
 int recieveSync(int sock) {
 	char *init="START_SYNC";
@@ -175,4 +168,3 @@ int sendFile(int sock, const char* filename){
 }
 
 // TODO close sockets
-
