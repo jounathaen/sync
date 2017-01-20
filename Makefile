@@ -8,7 +8,7 @@ CC := gcc
 GXX := g++
 LD := g++
 
-CCFLAGS := -std=c99
+CCFLAGS := -std=gnu11
 CXXFLAGS := -Wall
 
 SRC_DIR := src
