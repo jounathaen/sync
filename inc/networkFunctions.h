@@ -21,19 +21,24 @@ struct addrinfo *addresses, *p;
 
 
 // create and connect to TCP socket
-int createSocket();
+int createSocketListen();
 
+// create a socet to send
+int createSocketSending();
+
+
+int recieveBuf(int sock);
 
 //check if SYNC request is correct
 int recieveSync(int sock);
 
 
 //recieves a list of files and saves it
-void recieveList(fileList *list, int sock);
+void recieveList(int sock);
 
 
 //recieves files and writes them to filesystem
-void recieveFiles(int sock);
+void recieveFile(int sock);
 
 
 // sends buffer, make sure all parts are sent
@@ -45,6 +50,6 @@ int sendFile(int sock, const char* filename);
 
 
 //sends all files from a given file list
-void sendList(int sock, fileList *list);
+void sendList(int sock, fileList *fl);
 
 #endif //NETWORKFUNCTIONS_H
