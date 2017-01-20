@@ -4,3 +4,4 @@ build/
 sync
 *.#*
 test*
+.dir-locals.el
