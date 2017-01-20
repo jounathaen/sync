@@ -1,4 +1,4 @@
-TARGET := sync
+TARGET := sync server
 
 LDFLAGS :=
 
@@ -37,7 +37,7 @@ build:
 
 $(TARGET): $(OBJS) | build
 				@echo "----> Building	 $@"
-				$(LD) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
+				$(LD) $(LDFLAGS) -o $@ $(filter-out $(BUILD_DIR)/$@.o, $(OBJS)) $(LIBS)
 
 $(BUILD_DIR)/%.d: $(SRC_DIR)/%.c | build
 				@echo "----> dependency $<"
