@@ -6,7 +6,7 @@ int createSocketListen(const char* portnum) {
   memset(&hints, 0, sizeof(struct addrinfo));
   hints.ai_family = AF_UNSPEC;
   hints.ai_socktype = SOCK_STREAM;
-	hints.ai_flags = AI_PASSIVE | AI_ALL; // TODO not only use local IP
+	hints.ai_flags = AI_PASSIVE | AI_ALL;
   if (getaddrinfo("::0", portnum, &hints, &addresses) != 0) {
     perror("getaddrinfo");
     return 1;
@@ -139,7 +139,6 @@ void sendList(int sock, fileList *fl)	//sends all files from a given file list
   // send length of file List
   send(sock, (const void*) &fl->length, sizeof(fl->length),0);
   for (unsigned int i = 0; i< fl->length; i++){
-    // TODO size of file? */
     send(sock, (const void*) &fl->entry[i].filesize, sizeof(fl->entry[i].filesize), 0);
     sendFile(sock, fl->entry[i].filename);
     // TODO send fileListEntry in addition? )Includes timestamp and hash
