@@ -33,7 +33,7 @@ int recieveSync(int sock);
 
 
 //recieves a list of files and saves it
-void recieveList(int sock);
+void recieveListFiles(int sock);
 
 
 //recieves files and writes them to filesystem
@@ -44,11 +44,14 @@ void recieveFile(int sock);
 int sendBuf(int sock, char *buffer, int length);
 
 
+//sends all files from a given file list
+void sendListFiles(int sock, fileList *fl);
+
+
+// sends file with metadata
+void sendFile(int sock, fileListEntry * fle);
+
 // sends a single file
 int sendFileContent(int sock, const char* filename);
-
-
-//sends all files from a given file list
-void sendList(int sock, fileList *fl);
 
 #endif //NETWORKFUNCTIONS_H

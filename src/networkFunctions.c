@@ -85,7 +85,7 @@ int recieveSync(int sock) {
 }
 
 
-void recieveList(int sock){
+void recieveListFiles(int sock){
 	// recieve size of list of files
   unsigned int listsize;
 	recv(sock,&listsize,sizeof(listsize),0);
@@ -145,16 +145,21 @@ int sendBuf(int sock, char *buffer, int length) {
 }
 
 
-void sendList(int sock, fileList *fl)	//sends all files from a given file list
+void sendListFiles(int sock, fileList *fl)	//sends all files from a given file list
 {
   // send length of file List
   send(sock, (const void*) &fl->length, sizeof(fl->length),0);
   for (unsigned int i = 0; i< fl->length; i++){
-    send(sock, (const void*) &fl->entry[i].filesize, sizeof(fl->entry[i].filesize), 0);
-    send(sock, (const void*) fl->entry[i].filename, sizeof(fl->entry[i].filename), 0);
-    send(sock, (const void*) &fl->entry[i].timestamp, sizeof(fl->entry[i].timestamp), 0);
-    sendFileContent(sock, fl->entry[i].filename);
+    sendFile(sock, &fl->entry[i]);
   }
+}
+
+
+void sendFile(int sock, fileListEntry * fle){
+  send(sock, (const void*) &fle->filesize, sizeof(&fle->filesize), 0);
+  send(sock, (const void*) fle->filename, sizeof(fle->filename), 0);
+  send(sock, (const void*) &fle->timestamp, sizeof(&fle->timestamp), 0);
+  sendFileContent(sock, fle->filename);
 }
 
 
