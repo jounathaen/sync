@@ -94,7 +94,8 @@ enum ComparisionReturnTypes compareEntries(fileListEntry *entry1, fileListEntry 
 /*
   Creates a list of Files which are notexistent on remotefiles and stores it into resultingList
  */
-void createFileLists(fileList * sendList, fileList *  deletionList, fileList * hostFiles,
+void createFileLists(fileList * sendList, fileList * recieveList, fileList * deletionList,
+                     fileList * deleteRemoteList,  fileList * hostFiles,
                      fileList * remoteFiles, enum missingHandling option);
 
 /*

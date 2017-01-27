@@ -131,8 +131,9 @@ enum ComparisionReturnTypes compareEntries(fileListEntry *entry1, fileListEntry 
 }
 
 
-void createFileLists(fileList * sendList, fileList *  deletionList, fileList * hostFiles,
-                          fileList * remoteFiles, enum missingHandling option){
+void createFileLists(fileList * sendList, fileList * recieveList, fileList * deletionList,
+                     fileList * deleteRemoteList,  fileList * hostFiles,
+                     fileList * remoteFiles, enum missingHandling option){
   /* setActiveList(sendList); */
   for (unsigned int i = 0; i < hostFiles->length; i++){
     for (unsigned int j = 0; j < remoteFiles->length; j++){
@@ -149,6 +150,9 @@ void createFileLists(fileList * sendList, fileList *  deletionList, fileList * h
         addFile(deletionList, sendList->index, hostFiles->entry[i].filename,
                 hostFiles->entry[i].timestamp, hostFiles->entry[i].filesize);
         deletionList->index++;
+        addFile(recieveList, recieveList->index, remoteFiles->entry[j].filename,
+                remoteFiles->entry[j].timestamp, remoteFiles->entry[j].filesize);
+        recieveList->index++;
         goto nextfile;
       case File1Newer:
         /* printf("adding file %s to the list\n", &remoteFiles->entry[j].filename); */
@@ -156,12 +160,16 @@ void createFileLists(fileList * sendList, fileList *  deletionList, fileList * h
         addFile(sendList, sendList->index, hostFiles->entry[i].filename,
                 hostFiles->entry[i].timestamp, hostFiles->entry[i].filesize);
         sendList->index++;
+        addFile(deleteRemoteList, deleteRemoteList->index, remoteFiles->entry[j].filename,
+                remoteFiles->entry[j].timestamp, remoteFiles->entry[j].filesize);
+        deleteRemoteList->index++;
         goto nextfile;
       case FilesNotTheSame:
         /* printf("Files are different\n"); */
         /* try next file in remoteFiles list */
         break;
       case GeneralConfusion:
+        /* TODO maybe ask */
         printf("Error: Skipping File %s\n", hostFiles->entry[i].filename);
         goto nextfile;
       }
@@ -177,8 +185,9 @@ void createFileLists(fileList * sendList, fileList *  deletionList, fileList * h
       break;
     case deleteOnRemote:
       /* send it, this option does not affect local behaviour*/
+      /* same action as mergeEverything */
     case mergeEverything:
-      /* printf("File %s not found on Remote, sending it\n", hostFiles->entry[i].filename); */
+      printf("File %s not found on Remote, sending it\n", hostFiles->entry[i].filename);
       addFile(sendList, sendList->index, hostFiles->entry[i].filename,
               hostFiles->entry[i].timestamp, hostFiles->entry[i].filesize);
       sendList->index++;
@@ -192,6 +201,50 @@ void createFileLists(fileList * sendList, fileList *  deletionList, fileList * h
   nextfile:;
   }
 
+  /* search for files not on the host but on the remote  */
+  for (unsigned int i = 0; i < remoteFiles->length; i++){
+    for (unsigned int j = 0; j < hostFiles->length; j++){
+      switch (compareEntries(&remoteFiles->entry[i], &hostFiles->entry[j])){
+      case GeneralConfusion:
+        printf("Error: Skipping File %s\n", hostFiles->entry[i].filename);
+      case FilesEqual:
+      case File2Newer:
+      case File1Newer:
+        goto remoteNextfile;
+      case FilesNotTheSame:
+        /* printf("Files are different\n"); */
+        /* try next file in remoteFiles list */
+        break;
+      }
+    }
+    /* file not found on host*/
+    switch(option){
+    case deleteOnRemote:
+      printf("File %s not found on host, deleting it on remote\n", remoteFiles->entry[i].filename);
+      addFile(deleteRemoteList, deleteRemoteList->index, remoteFiles->entry[i].filename,
+              remoteFiles->entry[i].timestamp, remoteFiles->entry[i].filesize);
+      deleteRemoteList->index++;
+      break;
+    case deleteOnHost:
+      /* send it, this option does not affect local behaviour*/
+      /* same action as mergeEverything */
+    case mergeEverything:
+      printf("File %s not found on host, sending it\n", remoteFiles->entry[i].filename);
+      addFile(recieveList, recieveList->index, remoteFiles->entry[i].filename,
+              remoteFiles->entry[i].timestamp, remoteFiles->entry[i].filesize);
+      recieveList->index++;
+      break;
+    case ask:
+      printf("File %s not found on host. [T]ransfer or [D]elete local File?\n",
+             remoteFiles->entry[i].filename);
+      /* TODO  scanf...*/
+      break;
+    }
+  remoteNextfile:;
+  }
+
+
+  /* clean up the lists */
   fileListEntry *newpointer = (fileListEntry*) realloc((void*) sendList->entry,
                                                        sendList->index * sizeof(fileListEntry));
   if (newpointer==NULL){
@@ -202,14 +255,40 @@ void createFileLists(fileList * sendList, fileList *  deletionList, fileList * h
   sendList->length = sendList->index;
   sendList->index = 0;
 
-  newpointer = (fileListEntry*) realloc((void*) deletionList->entry, deletionList->index * sizeof(fileListEntry));
-  if (newpointer==NULL){
-    printf("ERROR while shrinkening memory of deletionList");
-    return;
-  }
-  deletionList->entry = newpointer;
   deletionList->length = deletionList->index;
-  deletionList->index = 0;
+  if (deletionList->length > 0) {
+    newpointer = (fileListEntry*) realloc((void*) deletionList->entry,
+                                          deletionList->index * sizeof(fileListEntry));
+    if (newpointer==NULL){
+      printf("ERROR whi shrinkening memory of deletionList");
+      return;
+    }
+    deletionList->entry = newpointer;
+    deletionList->index = 0;
+  }
+
+  recieveList->length = recieveList->index;
+  if (recieveList->length > 0) {
+    newpointer = (fileListEntry*) realloc((void*) recieveList->entry,
+                                          recieveList->index * sizeof(fileListEntry));
+    if (newpointer==NULL){
+      printf("ERROR whi shrinkening memory of recieveList");
+      return;
+    }
+    recieveList->entry = newpointer;
+    recieveList->index = 0;
+  }
+  deleteRemoteList->length = deleteRemoteList->index;
+  if (deleteRemoteList->length > 0) {
+    newpointer = (fileListEntry*) realloc((void*) deleteRemoteList->entry,
+                                          deleteRemoteList->index * sizeof(fileListEntry));
+    if (newpointer==NULL){
+      printf("ERROR whi shrinkening memory of deleteRemoteList");
+      return;
+    }
+    deleteRemoteList->entry = newpointer;
+    deleteRemoteList->index = 0;
+  }
 }
 
 
@@ -234,14 +313,15 @@ void printFileList(fileList *fL){
 
 
 int removeFileList(fileList* fL){
-  for (unsigned int i = 0; i< fL->length; i++){
+  for (unsigned int i = 0; i < fL->length; i++){
+    printf("deleting file %d %s\n", i, fL->entry[i].filename);
     if (remove(fL->entry[i].filename) != 0){
       printf("Error when deleting file: %s\n", fL->entry[i].filename);
       return -1;
     }
   }
 
-  free(fL->entry);
+  /* free(fL->entry); */
   fL->length = 0;
   fL->index = 0;
 
