@@ -45,7 +45,7 @@ int sendBuf(int sock, char *buffer, int length);
 
 
 // sends a single file
-int sendFile(int sock, const char* filename);
+int sendFileContent(int sock, const char* filename);
 
 
 //sends all files from a given file list

@@ -102,15 +102,26 @@ void recieveList(int sock){
 
 
 void recieveFile(int sock){
+  time_t timestamp = 0;
+  char *name = (char*) malloc(FILENAME_MAX_SIZE);
   unsigned long int filesize = 0;
 	recv(sock,&filesize,sizeof(filesize),0);
   printf("recieved size: %ld\n", filesize);
   // TODO Split recieving for large files
+  /* recieve filename timestamp */
   char *buff= (char*) malloc(sizeof(char)*filesize);
+  recv(sock, name, FILENAME_MAX_SIZE, 0);
+  recv(sock, &timestamp, sizeof(time_t), 0);
   recv(sock, buff, filesize, 0);
-  //TODO write file to filesystem
+  printf("Recieved Filename: %s\n", name);
+  char tbuff [20];
+  strftime(tbuff, sizeof(tbuff), "%b %d %H:%M", (struct tm*) localtime (&timestamp));
+  printf("Recieved Timestamp: %-5s\n", tbuff);
   printf("Recieved File:\n%s\n", buff);
+  //TODO write file to filesystem
+  printf("\n\n");
   free(buff);
+  free(name);
 }
 
 
@@ -140,13 +151,14 @@ void sendList(int sock, fileList *fl)	//sends all files from a given file list
   send(sock, (const void*) &fl->length, sizeof(fl->length),0);
   for (unsigned int i = 0; i< fl->length; i++){
     send(sock, (const void*) &fl->entry[i].filesize, sizeof(fl->entry[i].filesize), 0);
-    sendFile(sock, fl->entry[i].filename);
-    // TODO send fileListEntry in addition? )Includes timestamp and hash
+    send(sock, (const void*) fl->entry[i].filename, sizeof(fl->entry[i].filename), 0);
+    send(sock, (const void*) &fl->entry[i].timestamp, sizeof(fl->entry[i].timestamp), 0);
+    sendFileContent(sock, fl->entry[i].filename);
   }
 }
 
 
-int sendFile(int sock, const char* filename){
+int sendFileContent(int sock, const char* filename){
   #define BUFFSIZE (64*1024)
   int bytes;
   FILE *inFile = fopen (filename, "rb");
