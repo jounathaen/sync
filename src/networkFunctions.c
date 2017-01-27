@@ -125,6 +125,19 @@ void recieveFile(int sock){
 }
 
 
+void recieveList(int sock, fileList * fl){
+  recv(sock, fl, sizeof(fileList), 0);
+  fl->entry = (fileListEntry *) malloc(sizeof(fileListEntry) * fl->length);
+  recv(sock, fl->entry, sizeof(fileListEntry) * fl->length, 0);
+}
+
+
+void sendList(int sock, fileList * fl){
+  send(sock, (const void *) fl, sizeof(fileList), 0);
+  send(sock, (const void *) fl->entry, sizeof(fileListEntry)*fl->length, 0);
+}
+
+
 int sendBuf(int sock, char *buffer, int length) {
   int sent = 0;       // already sent bytes
 	int left = length;  // remaining bytes to send
