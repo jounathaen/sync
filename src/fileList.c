@@ -146,7 +146,6 @@ void createFileLists(fileList * sendList, fileList * recieveList, fileList * del
         goto nextfile;
       case File2Newer:
         /* remote is newer, delete and fetch from remote*/
-        /* TODO maybe do not delete, but simply override */
         addFile(deletionList, sendList->index, hostFiles->entry[i].filename,
                 hostFiles->entry[i].timestamp, hostFiles->entry[i].filesize);
         deletionList->index++;
@@ -175,10 +174,10 @@ void createFileLists(fileList * sendList, fileList * recieveList, fileList * del
       }
     }
     /* file not found on remote */
+    char answ = 0;
     switch(option){
     case deleteOnHost:
       printf("File %s not found on remote, deleting it on local\n", hostFiles->entry[i].filename);
-      /* TODO probably we don't need this  */
       addFile(deletionList, deletionList->index, hostFiles->entry[i].filename,
               hostFiles->entry[i].timestamp, hostFiles->entry[i].filesize);
       deletionList->index++;
@@ -193,9 +192,27 @@ void createFileLists(fileList * sendList, fileList * recieveList, fileList * del
       sendList->index++;
       break;
     case ask:
+    askbeginn:
+      answ = 0;
       printf("File %s not found on remote. [T]ransfer or [D]elete local File?\n",
              hostFiles->entry[i].filename);
-      /* TODO  scanf...*/
+      scanf("%c%*c", &answ);
+      if(answ == 'T' || answ == 't'){
+        printf("Ok, transferring it!\n");
+        addFile(sendList, sendList->index, hostFiles->entry[i].filename,
+                hostFiles->entry[i].timestamp, hostFiles->entry[i].filesize);
+        sendList->index++;
+      }
+      else if(answ == 'D' || answ == 'd'){
+        printf("Ok, deleting it!\n");
+        addFile(deletionList, deletionList->index, hostFiles->entry[i].filename,
+                hostFiles->entry[i].timestamp, hostFiles->entry[i].filesize);
+        deletionList->index++;
+      }
+      else{
+        printf("Error: Follow the Instructions! (stupid people...)\n");
+        goto askbeginn;
+      }
       break;
     }
   nextfile:;
@@ -218,6 +235,7 @@ void createFileLists(fileList * sendList, fileList * recieveList, fileList * del
       }
     }
     /* file not found on host*/
+    char answ = 0;
     switch(option){
     case deleteOnRemote:
       printf("File %s not found on host, deleting it on remote\n", remoteFiles->entry[i].filename);
@@ -235,9 +253,27 @@ void createFileLists(fileList * sendList, fileList * recieveList, fileList * del
       recieveList->index++;
       break;
     case ask:
-      printf("File %s not found on host. [T]ransfer or [D]elete local File?\n",
+    remoteaskbeginn:
+      answ = 0;
+      printf("File %s not found on host. [T]ransfer or [D]elete remote File?\n",
              remoteFiles->entry[i].filename);
-      /* TODO  scanf...*/
+      scanf("%c%*c", &answ);
+      if(answ == 'T' || answ == 't'){
+        printf("Ok, transferring it!\n");
+        addFile(recieveList, recieveList->index, remoteFiles->entry[i].filename,
+                remoteFiles->entry[i].timestamp, remoteFiles->entry[i].filesize);
+        recieveList->index++;
+      }
+      else if(answ == 'D' || answ == 'd'){
+        printf("Ok, deleting it!\n");
+        addFile(deleteRemoteList, deleteRemoteList->index, remoteFiles->entry[i].filename,
+                remoteFiles->entry[i].timestamp, remoteFiles->entry[i].filesize);
+        deleteRemoteList->index++;
+      }
+      else{
+        printf("Error: Follow the Instructions! (stupid people...)\n");
+        goto remoteaskbeginn;
+      }
       break;
     }
   remoteNextfile:;
