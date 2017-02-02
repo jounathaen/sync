@@ -79,7 +79,7 @@ int recieveSync(int sock) {
 	recv(sock,comp,sizeof(init),0);
 	if(!strcmp(comp, init)) {
 		printf("Wrong SYNC initilization");
-		return 1;
+		return -1;
 	}
 	return 0;
 }
