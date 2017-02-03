@@ -33,11 +33,12 @@ int recieveSync(int sock);
 
 
 //recieves a list of files and saves it
-void recieveListFiles(int sock);
+void recieveListFiles(int sock, const char * prependdir);
 
 
 //recieves files and writes them to filesystem
-void recieveFile(int sock);
+void recieveFile(int sock, const char * prependdir);
+
 
 
 //recieve a 'fileList'
@@ -53,11 +54,11 @@ int sendBuf(int sock, char *buffer, int length);
 
 
 //sends all files from a given file list
-void sendListFiles(int sock, fileList *fl);
+void sendListFiles(int sock, fileList *fl, const char* prependdir);
 
 
 // sends file with metadata
-void sendFile(int sock, fileListEntry * fle);
+void sendFile(int sock, fileListEntry * fle, const char* prependdir);
 
 // sends a single file
 int sendFileContent(int sock, const char* filename);

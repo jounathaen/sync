@@ -65,6 +65,7 @@ int createSocketSending(const char* ipaddr, const char* portnum) {
   return s;
 }
 
+
 int recieveBuf(int sock) {
 	char buff[1024];
 	recv(sock, buff, sizeof(buff), 0);
@@ -75,17 +76,17 @@ int recieveBuf(int sock) {
 
 int recieveSync(int sock) {
 	char *init="START_SYNC";
-	char *comp="0";
-	recv(sock,comp,sizeof(init),0);
-	if(!strcmp(comp, init)) {
-		printf("Wrong SYNC initilization");
+	char comp[20];
+	recv(sock, comp, strlen(init), 0);
+	if(strncmp(comp, init, 5)) {
+		printf("Wrong SYNC initilization\nWas %s and %s \n", init, comp);
 		return -1;
 	}
 	return 0;
 }
 
 
-void recieveListFiles(int sock){
+void recieveListFiles(int sock, const char * prependdir){
 	// recieve size of list of files
   unsigned int listsize;
 	recv(sock,&listsize,sizeof(listsize),0);
@@ -93,22 +94,18 @@ void recieveListFiles(int sock){
 
 	//recieve file list
   for (unsigned int i = 0; i < listsize; i++){
-    recieveFile(sock);
+    recieveFile(sock, prependdir);
   }
   printf("-----------------\nDone revieving List\n");
-  /* list = (fileList*) malloc(sizeof(fileList)*sol); */
-  /* recv(sock,list,sizeof(list),0); */
 }
 
 
-void recieveFile(int sock){
+void recieveFile(int sock, const char * prependdir){
   time_t timestamp = 0;
   char *name = (char*) malloc(FILENAME_MAX_SIZE);
   unsigned long int filesize = 0;
 	recv(sock,&filesize,sizeof(filesize),0);
   printf("recieved size: %ld\n", filesize);
-  // TODO Split recieving for large files
-  /* recieve filename timestamp */
   char *buff= (char*) malloc(sizeof(char)*filesize);
   recv(sock, name, FILENAME_MAX_SIZE, 0);
   recv(sock, &timestamp, sizeof(time_t), 0);
@@ -118,23 +115,41 @@ void recieveFile(int sock){
   strftime(tbuff, sizeof(tbuff), "%b %d %H:%M", (struct tm*) localtime (&timestamp));
   printf("Recieved Timestamp: %-5s\n", tbuff);
   printf("Recieved File:\n%s\n", buff);
-  //TODO write file to filesystem
-  printf("\n\n");
+
+  char namebuff[FILENAME_MAX_SIZE];
+  strcpy(namebuff, prependdir);
+  strcat(namebuff, name);
+
+  /* TODO make shure it creates Subfolders */
+  FILE *writefile = fopen(namebuff, "w");
+  fputs(buff, writefile);
+  printf("wrote to fileSystem. Filename: %s\n", namebuff);
+  fclose(writefile);
+  //TODO modify timestamp
   free(buff);
   free(name);
 }
 
 
 void recieveList(int sock, fileList * fl){
-  recv(sock, fl, sizeof(fileList), 0);
-  fl->entry = (fileListEntry *) malloc(sizeof(fileListEntry) * fl->length);
-  recv(sock, fl->entry, sizeof(fileListEntry) * fl->length, 0);
+  int recievedNr = 0;
+  recv(sock, &recievedNr, sizeof(int), 0);
+  fl->length = ntohl(recievedNr);
+  printf("revieved file list header with length %u \n", fl->length);
+  if (fl->length > 0) {
+    fl->entry = (fileListEntry *) malloc(sizeof(fileListEntry) * fl->length);
+    recv(sock, fl->entry, sizeof(fileListEntry) * fl->length, 0);
+  }
 }
 
 
 void sendList(int sock, fileList * fl){
-  send(sock, (const void *) fl, sizeof(fileList), 0);
-  send(sock, (const void *) fl->entry, sizeof(fileListEntry)*fl->length, 0);
+  int convertednr = htonl(fl->length);
+  send(sock, (const void *) &convertednr, sizeof(convertednr), 0);
+  if (fl->length > 0) {
+    printf("DEBUG: sizeof: %ld, length: %d\n",  sizeof(fileListEntry), fl->length);
+    send(sock, (const void *) fl->entry, sizeof(fileListEntry)*fl->length, 0);
+  }
 }
 
 
@@ -151,28 +166,29 @@ int sendBuf(int sock, char *buffer, int length) {
 		sent += n;
 		left -= n;
 	}
-  // TODO add check for error
 	length=sent; //number of actually sent bytes
 
 	return n; // return -1 on error
 }
 
 
-void sendListFiles(int sock, fileList *fl)	//sends all files from a given file list
-{
+void sendListFiles(int sock, fileList *fl, const char* prependdir){	//sends all files from a given file list
   // send length of file List
   send(sock, (const void*) &fl->length, sizeof(fl->length),0);
   for (unsigned int i = 0; i< fl->length; i++){
-    sendFile(sock, &fl->entry[i]);
+    sendFile(sock, &fl->entry[i], prependdir);
   }
 }
 
 
-void sendFile(int sock, fileListEntry * fle){
+void sendFile(int sock, fileListEntry * fle, const char* prependdir){
   send(sock, (const void*) &fle->filesize, sizeof(&fle->filesize), 0);
   send(sock, (const void*) fle->filename, sizeof(fle->filename), 0);
   send(sock, (const void*) &fle->timestamp, sizeof(&fle->timestamp), 0);
-  sendFileContent(sock, fle->filename);
+  char buff [FILENAME_MAX_SIZE];
+  strcpy(buff, prependdir);
+  strcat(buff, fle->filename);
+  sendFileContent(sock, buff);
 }
 
 
