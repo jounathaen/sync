@@ -30,6 +30,7 @@ typedef struct fileList{
 
 // needed, as ftw does not allow further arguments
 fileList *activeFileList;
+int curdirnamelen;
 
 // return types for comparing two files
 enum ComparisionReturnTypes{
@@ -98,6 +99,14 @@ void createFileLists(fileList * sendList, fileList * recieveList, fileList * del
                      fileList * deleteRemoteList,  fileList * hostFiles,
                      fileList * remoteFiles, enum missingHandling option);
 
+
+
+
+void removeDirname(fileList *fL,  const char* dirname);
+
+
+  void addDirname(fileList *fL,  const char* dirname);
+
 /*
   Printing out the File List (for Debugging)
 */
@@ -106,6 +115,7 @@ void printFileList(fileList *fL);
 /*
   Delete all Files in a fileList
  */
-int removeFileList(fileList* fL);
+int removeFileList(fileList* fL, const char* prependdir);
+
 
 #endif //FILELIST_H

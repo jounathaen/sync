@@ -51,6 +51,7 @@ int handleFile(const char *name, const struct stat *status, int type) {
   if(type == FTW_F) {
     if(addFile(activeFileList, activeFileList->index, name, status->st_mtime, status->st_size))
       return -1;
+    createMD5(name, activeFileList->entry[activeFileList->index].filehash);
     activeFileList->index++;
   }
   return 0;
@@ -77,7 +78,6 @@ int addFile(fileList *fL, const unsigned int index, const char *name, time_t tim
   strcpy(fL->entry[index].filename, name);
   fL->entry[index].timestamp = timestamp;
   fL->entry[index].filesize= size;
-  createMD5(name, fL->entry[index].filehash);
   return 0;
 }
 
@@ -108,7 +108,8 @@ int createFileList(const char* filepath, fileList *fL){
 
 enum ComparisionReturnTypes compareEntries(fileListEntry *entry1, fileListEntry * entry2){
   /* extract filename from dirname */
-  if(strcmp(strrchr(entry1->filename, '/'), strrchr(entry2->filename, '/')) == 0){
+  /* TODO Bug, ./a and ./somedir/a */
+  if(strcmp(entry1->filename, entry2->filename) == 0){
     /* Filenames are the same  */
     if (compareMD5(entry1->filehash, entry2->filehash) == 0){
       /* hashes are the same */
@@ -281,16 +282,18 @@ void createFileLists(fileList * sendList, fileList * recieveList, fileList * del
 
 
   /* clean up the lists */
-  fileListEntry *newpointer = (fileListEntry*) realloc((void*) sendList->entry,
-                                                       sendList->index * sizeof(fileListEntry));
-  if (newpointer==NULL){
-    printf("ERROR while shrinkening memory of sendList");
-    return;
-  }
-  sendList->entry = newpointer;
+  fileListEntry *newpointer;
   sendList->length = sendList->index;
-  sendList->index = 0;
-
+  if (sendList->length > 0) {
+    newpointer = (fileListEntry*) realloc((void*) sendList->entry,
+                                          sendList->index * sizeof(fileListEntry));
+    if (newpointer==NULL){
+      printf("ERROR while shrinkening memory of sendList");
+      return;
+    }
+    sendList->entry = newpointer;
+    sendList->index = 0;
+  }
   deletionList->length = deletionList->index;
   if (deletionList->length > 0) {
     newpointer = (fileListEntry*) realloc((void*) deletionList->entry,
@@ -319,7 +322,7 @@ void createFileLists(fileList * sendList, fileList * recieveList, fileList * del
     newpointer = (fileListEntry*) realloc((void*) deleteRemoteList->entry,
                                           deleteRemoteList->index * sizeof(fileListEntry));
     if (newpointer==NULL){
-      printf("ERROR whi shrinkening memory of deleteRemoteList");
+      printf("ERROR while shrinkening memory of deleteRemoteList");
       return;
     }
     deleteRemoteList->entry = newpointer;
@@ -328,9 +331,30 @@ void createFileLists(fileList * sendList, fileList * recieveList, fileList * del
 }
 
 
+void removeDirname(fileList *fL,  const char* dirname){
+  for (unsigned int i = 0; i< fL->length && i < 50; i++){
+    char substring [FILENAME_MAX_SIZE];
+    int sublen = 0;
+    sublen = strlen(dirname);
+    strcpy(substring, fL->entry[i].filename + sublen);
+    strcpy(fL->entry[i].filename, substring);
+  }
+}
+
+
+void addDirname(fileList *fL,  const char* dirname){
+  for (unsigned int i = 0; i< fL->length && i < 50; i++){
+    char buff [FILENAME_MAX_SIZE];
+    strcpy(buff, dirname);
+    strcat(buff, fL->entry[i].filename);
+    strcpy(fL->entry[i].filename, buff);
+  }
+}
+
+
 void printFileList(fileList *fL){
   char buff[20];
-  for (unsigned int i = 0; i< fL->length; i++){
+  for (unsigned int i = 0; i< fL->length && i < 50; i++){
     /* the time  */
     strftime(buff, sizeof(buff), "%b %d %H:%M", (struct tm*) localtime (&fL->entry[i].timestamp));
     printf("%-5s\t", buff);
@@ -348,11 +372,14 @@ void printFileList(fileList *fL){
 }
 
 
-int removeFileList(fileList* fL){
+int removeFileList(fileList* fL, const char* prependdir){
   for (unsigned int i = 0; i < fL->length; i++){
-    printf("deleting file %d %s\n", i, fL->entry[i].filename);
-    if (remove(fL->entry[i].filename) != 0){
-      printf("Error when deleting file: %s\n", fL->entry[i].filename);
+    char buff [FILENAME_MAX_SIZE];
+    strcpy(buff, prependdir);
+    strcat(buff,fL->entry[i].filename);
+    printf("deleting file %s\n", buff);
+    if (remove(buff) != 0){
+      printf("Error when deleting file: %s\n", buff);
       return -1;
     }
   }
