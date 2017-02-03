@@ -6,20 +6,16 @@
 #include <getopt.h>     // for command line options parsing
 
 #include "fileList.h"
+#include "networkFunctions.h"
 
-fileList ownFiles, filesToDelete, filesToTransfer, fileList2;
-
-// Options to handle missing Items
-enum missingHandling{
-  deleteOnHost,
-  deleteOnRemote,
-  mergeEverything,
-  ask
-};
+fileList ownFiles, filesToDelete, filesToTransfer, remoteFiles, remoteFilesToDelete, remoteFilesToTransfer;
 
 //command line parameters
-enum missingHandling missingOptions = ask;
-int recoursivelySyncing = 1; // TODO
+enum missingHandling missingOptions = mergeEverything;
+
+char *hostdirectory;
+char *remotedirectory;
+char *remoteip;
 
 /*
   prints the use of the program
