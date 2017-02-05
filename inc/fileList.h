@@ -75,10 +75,10 @@ void setActiveList(fileList *newFileList);
   When 'type' is a file, it gets added to activeFileList.
   setActiveList must be used before
 */
-int handleFile(const char *name, const struct stat *status, int type); 
+int handleFile(const char *name, const struct stat *status, int type);
 
 /*
-  adds the file 'name' with 'timestamp' to the fileList fL at index. 
+  adds the file 'name' with 'timestamp' to the fileList fL at index.
  */
 int addFile(fileList *fL, const unsigned int index, const char *name, time_t timestamp, int size);
 
