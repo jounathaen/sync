@@ -117,13 +117,34 @@ void recieveFile(int sock, const char * prependdir){
   printf("Recieved File:\n%s\n", buff);
 
   char namebuff[FILENAME_MAX_SIZE];
+  char *dirbuff;
   strcpy(namebuff, prependdir);
   strcat(namebuff, name);
+  dirbuff = strdup(namebuff);
+  dirbuff = dirname(dirbuff);
+  /* Check if directory exists  */
+  printf("Dirname is: %s\n", dirbuff);
+  printf("Filename is: %s\n", namebuff);
 
-  /* TODO make shure it creates Subfolders */
+  // recursive directory creation
+  char tmp[256];
+  char *p = NULL;
+  size_t len;
+  snprintf(tmp, sizeof(tmp),"%s",dirbuff);
+  len = strlen(tmp);
+  if(tmp[len - 1] == '/')
+    tmp[len - 1] = 0;
+  for(p = tmp + 1; *p; p++)
+    if(*p == '/') {
+      *p = 0;
+      mkdir(tmp, S_IRWXU);
+      *p = '/';
+    }
+  mkdir(tmp, S_IRWXU);
+
   FILE *writefile = fopen(namebuff, "w");
   fputs(buff, writefile);
-  printf("wrote to fileSystem. Filename: %s\n", namebuff);
+  printf("wrote to fileSystem. Filename: %s Directory %s\n\n", namebuff, dirbuff);
   fclose(writefile);
   //TODO modify timestamp
   free(buff);
