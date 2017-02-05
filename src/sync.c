@@ -110,7 +110,6 @@ int main(int argc, char** argv){
   printf ("===============================\n");
   printFileList(&ownFiles);
 
-  sleep(3);
   recieveList(mysocket, &remoteFiles);
   printf ("\nRecieved File List:\n");
   printf ("===============================\n");
