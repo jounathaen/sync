@@ -99,13 +99,15 @@ void createFileLists(fileList * sendList, fileList * recieveList, fileList * del
                      fileList * deleteRemoteList,  fileList * hostFiles,
                      fileList * remoteFiles, enum missingHandling option);
 
-
-
-
+/*
+  Removes the given dirname from all filenames in the filelist
+ */
 void removeDirname(fileList *fL,  const char* dirname);
 
-
-  void addDirname(fileList *fL,  const char* dirname);
+/*
+  Prepends the given Dirname to all filenames in the filelist
+ */
+void addDirname(fileList *fL,  const char* dirname);
 
 /*
   Printing out the File List (for Debugging)
