@@ -18,8 +18,9 @@ void intterruphandler(int sig){
 
 
 void printUsage(){
-  // TODO More Information here
   printf("Usage: server [OPTIONS]");
+  printf("Options are:  -p [PORTNUM]  specifies portnumber");
+
 }
 
 

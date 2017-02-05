@@ -11,6 +11,11 @@
 
 void printUsage() {
   printf("Usage: sync [OPTIONS] path/to/local/directory IPADDRESS:/path/to/remote/directory\n");
+  printf("Options are: -dh    delete all files on HOST, when these files are not present on REMOTE");
+  printf("             -dr    delete all files on REMOTE, when these files are not present on HOST");
+  printf("             -dm    don't delete anything, merge directories and use newer files");
+  printf("             -da    ask for every file (DEFAULT OPTION)");
+  printf("             -p [PORTNUM]  specifies portnumber");
 }
 
 int main(int argc, char** argv){
