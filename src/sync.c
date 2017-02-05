@@ -18,7 +18,6 @@ int main(int argc, char** argv){
 
   // COMMAND LINE PARSING
   /* TODO error if argc < 3 */
-  /* TODO Portnummber */
   int c;
   struct option longopts[] = {
     { "delete",    required_argument, NULL, 'd' },
@@ -111,8 +110,10 @@ int main(int argc, char** argv){
   char *init="START_SYNC";
 	send(mysocket, init, strlen(init), 0);
 
-  /* TODO send directory name*/
-  /* TODO timeout for connection */
+  size_t dirnamelen = strlen(remotedirectory);
+  printf("remotedirectory is: %s length is %lu\n", remotedirectory, dirnamelen);
+  send(mysocket, &dirnamelen, sizeof(size_t), 0);
+	send(mysocket, remotedirectory, strlen(remotedirectory), 0);
 
   createFileList(hostdirectory, &ownFiles);
   removeDirname(&ownFiles, hostdirectory);
@@ -120,7 +121,7 @@ int main(int argc, char** argv){
   printf ("===============================\n");
   printFileList(&ownFiles);
 
-  sleep(1); //this is needed, otherwise the filelist generation on the remote gets buggy
+  sleep(2); //this is needed, otherwise the filelist generation on the remote gets buggy
   recieveList(mysocket, &remoteFiles);
   printf ("\nRecieved File List:\n");
   printf ("===============================\n");

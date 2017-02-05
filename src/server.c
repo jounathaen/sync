@@ -72,8 +72,15 @@ int main (int argc, char** argv){
       break;
     }
 
+    sleep(1);
     /* TODO recieve directory */
-    char * directory = "test2";
+    size_t dirnamelen = 0;
+    char * directory;
+    recv(currentsocket, &dirnamelen, sizeof(size_t), 0);
+    printf("dirnamelen: %lx\n", dirnamelen);
+    directory = (char*) malloc(dirnamelen);
+    recv(currentsocket, directory, dirnamelen, 0);
+    /* TODO Maybe check if permission for that directory */
     printf ("Directory to sync: %s", directory);
 
     fileListInit(&remoteFiles);
