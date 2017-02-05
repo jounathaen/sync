@@ -1,14 +1,33 @@
 #include "server.h"
 #include "fileList.h"
+#include <signal.h>
+
+
+int mysocket;
+int currentsocket;
+
+
+void intterruphandler(int sig){
+  printf("\nInterrupt! shutting down!\n");
+  shutdown(currentsocket, 2);
+  shutdown(mysocket, 2);
+  close(currentsocket);
+  close(mysocket);
+  exit (0);
+}
+
 
 void printUsage(){
   // TODO Adapt
   printf("Usage: sync [OPTIONS] path/to/local/directory IPADDRESS:/path/to/remote/directory\n");
 }
 
+
 int main (int argc, char** argv){
   // TODO command line Parameters PORTNUM!!!
-  int mysocket = createSocketListen("1234");
+  signal(SIGINT, intterruphandler);
+
+  mysocket = createSocketListen("1234");
 
   fileList remoteFiles, remoteFilesToDelete, remoteFilesToTransfer;
 	if (listen(mysocket, 5) == -1) {
@@ -19,7 +38,8 @@ int main (int argc, char** argv){
   socklen_t slen = sizeof(struct sockaddr);
   struct sockaddr_in clientaddr;
   while(1){
-    int currentsocket = accept(mysocket, (struct sockaddr*) &clientaddr, &slen);
+    printf("Waiting for connection\n");
+    currentsocket = accept(mysocket, (struct sockaddr*) &clientaddr, &slen);
     if (recieveSync(currentsocket) == -1){
       shutdown(currentsocket, 2);
       break;
@@ -55,24 +75,22 @@ int main (int argc, char** argv){
     printf ("===============================\n");
     printFileList(&remoteFilesToDelete);
 
-    printf("\nRecieving...\n");
-    recieveListFiles(currentsocket, directory);
-
-
     printf("Deleting...\n");
     removeFileList(&remoteFilesToDelete, directory);
+
+    printf("\nRecieving...\n");
+    recieveListFiles(currentsocket, directory);
 
     printf("Sending...\n");
     sendListFiles(currentsocket, &remoteFilesToTransfer, directory);
 
     shutdown(currentsocket, 2);
+    close(currentsocket);
     free(remoteFiles.entry);
     free(remoteFilesToTransfer.entry);
     free(remoteFilesToDelete.entry);
     printf("Sucess\n");
   }
-  shutdown(mysocket, 2);
 
-  /* never reached */
   return 0;
 }
