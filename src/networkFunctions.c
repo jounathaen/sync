@@ -115,17 +115,20 @@ void recieveFile(int sock, const char * prependdir){
   time_t timestamp = 0;
   char *name = (char*) malloc(FILENAME_MAX_SIZE);
   unsigned long int filesize = 0;
-	recv(sock,&filesize,sizeof(filesize),0);
+	recv(sock, &filesize, sizeof(filesize), 0);
   printf("recieved size: %ld\n", filesize);
   char *buff= (char*) malloc(sizeof(char)*filesize);
   recv(sock, name, FILENAME_MAX_SIZE, 0);
   recv(sock, &timestamp, sizeof(time_t), 0);
-  recv(sock, buff, filesize, 0);
+  unsigned int recieved=0;
+  do{
+    recieved += recv(sock, buff + recieved, filesize - recieved, 0);
+  } while(recieved < filesize);
   printf("Recieved Filename: %s\n", name);
   char tbuff [20];
   strftime(tbuff, sizeof(tbuff), "%b %d %H:%M", (struct tm*) localtime (&timestamp));
   printf("Recieved Timestamp: %-5s\n", tbuff);
-  printf("Recieved File:\n%s\n", buff);
+  /* printf("Recieved File:\n%s\n", buff); */
 
   char namebuff[FILENAME_MAX_SIZE];
   char *dirbuff;
@@ -153,8 +156,8 @@ void recieveFile(int sock, const char * prependdir){
     }
   mkdir(tmp, S_IRWXU);
 
-  FILE *writefile = fopen(namebuff, "w");
-  fputs(buff, writefile);
+  FILE *writefile = fopen(namebuff, "wb");
+  fwrite(buff, filesize, 1, writefile);
   printf("wrote to fileSystem. Filename: %s Directory %s\n\n", namebuff, dirbuff);
   fclose(writefile);
   //TODO modify timestamp
@@ -212,6 +215,7 @@ void sendListFiles(int sock, fileList *fl, const char* prependdir){
 
 
 void sendFile(int sock, fileListEntry * fle, const char* prependdir){
+  printf(">sending File %s\n", fle->filename);
   send(sock, (const void*) &fle->filesize, sizeof(&fle->filesize), 0);
   send(sock, (const void*) fle->filename, sizeof(fle->filename), 0);
   send(sock, (const void*) &fle->timestamp, sizeof(&fle->timestamp), 0);
