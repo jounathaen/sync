@@ -353,6 +353,10 @@ void addDirname(fileList *fL,  const char* dirname){
 
 
 void printFileList(fileList *fL){
+  if (fL->length == 0){
+    printf(">> File list is empty...\n");
+    return;
+  }
   char buff[20];
   for (unsigned int i = 0; i< fL->length && i < 50; i++){
     /* the time  */
@@ -363,12 +367,13 @@ void printFileList(fileList *fL){
     /* the name */
     printf("%-40s\t", fL->entry[i].filename);
     /* the hash */
+    /* TODO only print filehash if it is not 0 */
     for(int j = 0; j < MD5_DIGEST_LENGTH; j++) printf("%02x", fL->entry[i].filehash[j]);
     printf("\n");
   }
-  printf("sizeof of List on Memory: %d\n", (int) malloc_usable_size((void*)fL->entry));
+  printf("sizeof of List on Memory: %d Byte\n", (int) malloc_usable_size((void*)fL->entry));
   printf("length of file list: %d\n", fL->length);
-  printf("index of file list: %d\n", fL->index);
+  /* printf("index of file list: %d\n", fL->index); */
 }
 
 
