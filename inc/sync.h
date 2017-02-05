@@ -16,6 +16,7 @@ enum missingHandling missingOptions = mergeEverything;
 char *hostdirectory;
 char *remotedirectory;
 char *remoteip;
+char *port = NULL;
 
 /*
   prints the use of the program

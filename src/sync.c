@@ -23,10 +23,11 @@ int main(int argc, char** argv){
   struct option longopts[] = {
     { "delete",    required_argument, NULL, 'd' },
     { "help",      no_argument,       NULL, 'h' },
+    { "port",      required_argument, NULL, 'p' },
     { 0, 0, 0, 0 }
   };
 
-  while ((c = getopt_long(argc, argv, "d:h", longopts, NULL)) != -1) {
+  while ((c = getopt_long(argc, argv, "d:p:h", longopts, NULL)) != -1) {
     switch (c) {
     case 'd':
       switch (optarg[0]){
@@ -51,6 +52,9 @@ int main(int argc, char** argv){
         return -1;
       }
       break;
+    case 'p':
+      port=optarg;
+      break;
     case 'h':
       printUsage();
       return 0;
@@ -63,7 +67,13 @@ int main(int argc, char** argv){
   /* for (int i = 0; i < argc; i++){ */
   /*   printf("%i: %s\n", i, argv[i]); */
   /* } */
-
+  if(port == NULL)
+    port = "1234";
+  int portint = atoi(port);
+  if (portint > 65535 || portint < 0){
+    printf("ERROR: port %s is not a valid portnumber\n", port);
+    return -1;
+  }
   //extract directories and IP addresses
   hostdirectory = argv[argc - 2];
 
@@ -96,7 +106,7 @@ int main(int argc, char** argv){
   fileListInit(&filesToDelete);
   fileListInit(&remoteFilesToDelete);
 
-  int mysocket = createSocketSending(remoteip, "1234");
+  int mysocket = createSocketSending(remoteip, port);
 
   char *init="START_SYNC";
 	send(mysocket, init, strlen(init), 0);
