@@ -110,6 +110,7 @@ int main(int argc, char** argv){
   printf ("===============================\n");
   printFileList(&ownFiles);
 
+  sleep(1); //this is needed, otherwise the filelist generation on the remote gets buggy
   recieveList(mysocket, &remoteFiles);
   printf ("\nRecieved File List:\n");
   printf ("===============================\n");
