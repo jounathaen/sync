@@ -25,6 +25,7 @@ int createMD5(const char * filename, unsigned char c[MD5_DIGEST_LENGTH]){
     return 0;
 }
 
+
 int compareMD5(const unsigned char * hash1, const unsigned char * hash2){
   for(int i = 0; i < MD5_DIGEST_LENGTH; i++){
     if(hash1[i] != hash2[i])

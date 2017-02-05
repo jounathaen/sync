@@ -98,6 +98,7 @@ int recieveSync(int sock) {
 
 void recieveListFiles(int sock, const char * prependdir){
 	// recieve size of list of files
+  /* TODO handle empty lists */
   unsigned int listsize;
 	recv(sock,&listsize,sizeof(listsize),0);
   printf("Size of List to revieve: %d\n", listsize);
@@ -178,7 +179,6 @@ void sendList(int sock, fileList * fl){
   int convertednr = htonl(fl->length);
   send(sock, (const void *) &convertednr, sizeof(convertednr), 0);
   if (fl->length > 0) {
-    printf("DEBUG: sizeof: %ld, length: %d\n",  sizeof(fileListEntry), fl->length);
     send(sock, (const void *) fl->entry, sizeof(fileListEntry)*fl->length, 0);
   }
 }
@@ -203,8 +203,7 @@ int sendBuf(int sock, char *buffer, int length) {
 }
 
 
-void sendListFiles(int sock, fileList *fl, const char* prependdir){	//sends all files from a given file list
-  // send length of file List
+void sendListFiles(int sock, fileList *fl, const char* prependdir){
   send(sock, (const void*) &fl->length, sizeof(fl->length),0);
   for (unsigned int i = 0; i< fl->length; i++){
     sendFile(sock, &fl->entry[i], prependdir);
@@ -242,5 +241,3 @@ int sendFileContent(int sock, const char* filename){
   fclose (inFile);
   return 0;
 }
-
-// TODO close sockets

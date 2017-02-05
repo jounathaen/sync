@@ -152,6 +152,8 @@ int main(int argc, char** argv){
   printf ("\nRecieving Files:\n");
   recieveListFiles(mysocket, hostdirectory);
 
+  printf("Success\n\n");
+
   shutdown(mysocket, 2);
 
   free(filesToTransfer.entry);
@@ -163,6 +165,4 @@ int main(int argc, char** argv){
 
   free(remoteip);
   return 0;
-
-/* ========================================================00 */
 }

@@ -75,13 +75,13 @@ int main (int argc, char** argv){
     printf ("===============================\n");
     printFileList(&remoteFilesToDelete);
 
-    printf("Deleting...\n");
+    printf("\nDeleting local Files...\n");
     removeFileList(&remoteFilesToDelete, directory);
 
-    printf("\nRecieving...\n");
+    printf("\nRecieving Files...\n");
     recieveListFiles(currentsocket, directory);
 
-    printf("Sending...\n");
+    printf("Sending Files...\n");
     sendListFiles(currentsocket, &remoteFilesToTransfer, directory);
 
     shutdown(currentsocket, 2);
@@ -89,7 +89,7 @@ int main (int argc, char** argv){
     free(remoteFiles.entry);
     free(remoteFilesToTransfer.entry);
     free(remoteFilesToDelete.entry);
-    printf("Sucess\n");
+    printf("Success\n");
   }
 
   return 0;

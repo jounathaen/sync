@@ -40,7 +40,6 @@ void recieveListFiles(int sock, const char * prependdir);
 void recieveFile(int sock, const char * prependdir);
 
 
-
 //recieve a 'fileList'
 void recieveList(int sock, fileList * fl);
 
