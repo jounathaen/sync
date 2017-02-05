@@ -18,16 +18,43 @@ void intterruphandler(int sig){
 
 
 void printUsage(){
-  // TODO Adapt
-  printf("Usage: sync [OPTIONS] path/to/local/directory IPADDRESS:/path/to/remote/directory\n");
+  // TODO More Information here
+  printf("Usage: server [OPTIONS]");
 }
 
 
 int main (int argc, char** argv){
   // TODO command line Parameters PORTNUM!!!
   signal(SIGINT, intterruphandler);
+  int c;
+  struct option longopts[] = {
+    { "help",      no_argument,       NULL, 'h' },
+    { "port",      required_argument, NULL, 'p' },
+    { 0, 0, 0, 0 }
+  };
 
-  mysocket = createSocketListen("1234");
+  while ((c = getopt_long(argc, argv, "p:h", longopts, NULL)) != -1) {
+    switch (c) {
+      case 'p':
+      port=optarg;
+      break;
+    case 'h':
+      printUsage();
+      return 0;
+    default:
+      printf("character was %c\n", c);
+    }
+  }
+
+  if(port == NULL)
+    port = "1234";
+  int portint = atoi(port);
+  if (portint > 65535 || portint < 0){
+    printf("ERROR: port %s is not a valid portnumber\n", port);
+    return -1;
+  }
+
+  mysocket = createSocketListen(port);
 
   fileList remoteFiles, remoteFilesToDelete, remoteFilesToTransfer;
 	if (listen(mysocket, 5) == -1) {

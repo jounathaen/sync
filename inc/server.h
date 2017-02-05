@@ -10,6 +10,11 @@
 
 fileList ownFiles, filesToDelete, filesToTransfer, remoteFiles;
 
+char *port = NULL;
+
+/*
+  prints the use of the program
+*/
 void printUsage();
 
 #endif //SERVER_H
