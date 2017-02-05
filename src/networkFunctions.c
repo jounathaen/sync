@@ -17,6 +17,16 @@ int createSocketListen(const char* portnum) {
       perror("client: socket");
       continue;
     }
+    int reuse = 1;
+    // SO_REUSEADDR so we don't have to wait before re-starting the program
+    if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (const char*)&reuse, sizeof(reuse)) < 0)
+      printf("setsockopt(SO_REUSEADDR) failed");
+
+#ifdef SO_REUSEPORT
+    if (setsockopt(s, SOL_SOCKET, SO_REUSEPORT, (const char*)&reuse, sizeof(reuse)) < 0)
+      printf("setsockopt(SO_REUSEPORT) failed");
+#endif
+
 		if (bind(s, p->ai_addr, p->ai_addrlen) == -1) {
 			close(s);
 			perror("server: bind");
