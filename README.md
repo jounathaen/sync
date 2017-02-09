@@ -38,7 +38,7 @@ A Client for Syncing 2 Directories:
 - Manually correct time stamps
 Done :-)
 
-### Command line Parameters: ###
+### Command line Parameters for Client: ###
   `-d   --delete [OPTION]`
 
   OPTION is:  
@@ -51,8 +51,20 @@ Done :-)
   `a, ask`:  
     ask for every file, to remove on HOST/REMOTE or keep both (DEFAULT OPTION)  
     
-  `-h   --help`
-  prints a small usage text
+  `-h   --help`  
+  prints a small usage text  
+  
+  `-p --port [PORTNUM]`  
+    specifies the portnumber, if not set 1234 is used
+
+### Command line Parameters for Server: ###
+  `-h   --help`  
+  prints a small usage text  
+  
+  `-p --port [PORTNUM]`  
+    specifies the portnumber, if not set 1234 is used
+
+
 
 ### Possible File Collisions: ###
 * File has same signature on both PC
