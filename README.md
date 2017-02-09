@@ -39,9 +39,9 @@ A Client for Syncing 2 Directories:
 Done :-)
 
 ### Command line Parameters: ###
-`-d   --delete [OPTION]`
+  `-d   --delete [OPTION]`
 
-OPTION is:
+  OPTION is:
   h, host: 
     don't ask, delete all files on HOST, when these files are not present on REMOTE
   r, remote: 
@@ -51,10 +51,10 @@ OPTION is:
   a, ask:
     ask for every file, to remove on HOST/REMOTE or keep both (DEFAULT OPTION)
     
-`-r    --recursives`
+  `-r    --recursives`
   sync directories inside directories
 
-`-h   --help`
+  `-h   --help`
   prints a small usage text
 
 ### Possible File Collisions: ###
