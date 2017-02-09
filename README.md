@@ -42,13 +42,13 @@ Done :-)
   `-d   --delete [OPTION]`
 
   OPTION is:
-  h, host: 
+  `h, host`: 
     don't ask, delete all files on HOST, when these files are not present on REMOTE
-  r, remote: 
+  `r, remote`: 
     don't ask, delete all files on REMOTE, when these files are not present on HOST
-  m, merge: 
+  `m, merge`: 
     don't delete anything, files that are not present on HOST will get copied from REMOTE and vice versa
-  a, ask:
+  `a, ask`:
     ask for every file, to remove on HOST/REMOTE or keep both (DEFAULT OPTION)
     
   `-h   --help`
