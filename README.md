@@ -51,9 +51,6 @@ Done :-)
   a, ask:
     ask for every file, to remove on HOST/REMOTE or keep both (DEFAULT OPTION)
     
-  `-r    --recursives`
-  sync directories inside directories
-
   `-h   --help`
   prints a small usage text
 
