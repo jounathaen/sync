@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<struct id="fileList::fileList" name="fileList" typedef="yes" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief>A fileList is a data structure which stores metadata of a list of files, so they can be compared</brief>
+  <field id="fileList::fileList::entry" name="entry">
+    <brief>Array to the Elements of the fileList</brief>
+    <type name="fileListEntry" qualifier="*" ref="fileList::fileListEntry#fileList::fileListEntry" />
+  </field>
+  <field id="fileList::fileList::length" name="length">
+    <brief>Number of Elements in fileList</brief>
+    <type builtin="yes" name="unsigned int" />
+  </field>
+  <field id="fileList::fileList::index" name="index">
+    <brief>Index used when iterating through the fileList</brief>
+    <type builtin="yes" name="unsigned int" />
+  </field>
+</struct>

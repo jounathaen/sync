@@ -1,7 +1,7 @@
 #include "fileList.h"
 
 
-int createMD5(const char * filename, unsigned char c[MD5_DIGEST_LENGTH]){
+int createMD5(const char * filename, unsigned char output[MD5_DIGEST_LENGTH]){
     /* unsigned char c[MD5_DIGEST_LENGTH]; */
     int bytes;
     FILE *inFile = fopen (filename, "rb");
@@ -10,13 +10,13 @@ int createMD5(const char * filename, unsigned char c[MD5_DIGEST_LENGTH]){
 
     if (inFile == NULL) {
         printf ("%s can't be opened.\n", filename);
-        return 0;
+        return -1;
     }
 
     MD5_Init (&mdContext);
     while ((bytes = fread (data, 1, 1024, inFile)) != 0)
         MD5_Update (&mdContext, data, bytes);
-    MD5_Final (c,&mdContext);
+    MD5_Final (output, &mdContext);
     /* print it */
     /* for(int i = 0; i < MD5_DIGEST_LENGTH; i++) printf("%02x", c[i]); */
     /* printf (" \n"); */

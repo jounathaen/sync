@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<struct id="fileListEntry" name="fileListEntry" typedef="yes" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <field id="fileListEntry::filename" name="filename">
+    <type class="array" size="224">
+      <type builtin="yes" name="char" />
+    </type>
+  </field>
+  <field id="fileListEntry::filehash" name="filehash">
+    <type class="array" size="16">
+      <type builtin="yes" name="unsigned char" />
+    </type>
+  </field>
+  <field id="fileListEntry::timestamp" name="timestamp">
+    <type name="time_t" />
+  </field>
+  <field id="fileListEntry::filesize" name="filesize">
+    <type builtin="yes" name="unsigned long" />
+  </field>
+</struct>

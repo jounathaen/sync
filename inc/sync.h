@@ -8,6 +8,7 @@
 #include "fileList.h"
 #include "networkFunctions.h"
 
+/* cldoc:begin-category(SyncingClient) */
 fileList ownFiles, filesToDelete, filesToTransfer, remoteFiles, remoteFilesToDelete, remoteFilesToTransfer;
 
 //command line parameters
@@ -18,9 +19,9 @@ char *remotedirectory;
 char *remoteip;
 char *port = NULL;
 
-/*
-  prints the use of the program
+/* prints a small message about the use of the program
 */
 void printUsage();
 
+/* cldoc:end-category() */
 #endif /* SYNC_H */

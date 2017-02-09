@@ -8,13 +8,17 @@
 #include "fileList.h"
 #include "networkFunctions.h"
 
-fileList ownFiles, filesToDelete, filesToTransfer, remoteFiles;
+/* cldoc:begin-category(Server) */
 
+fileList ownFiles, filesToDelete, filesToTransfer, remoteFiles;
 char *port = NULL;
 
-/*
-  prints the use of the program
+/* The server main loop */
+int main (int argc, char** argv);
+
+/* prints the a small message about the use of the program
 */
 void printUsage();
 
+/* cldoc:end-category() */
 #endif //SERVER_H

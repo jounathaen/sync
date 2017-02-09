@@ -1,0 +1,258 @@
+<?xml version='1.0' encoding='utf-8'?>
+<category id="fileList" name="fileList" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <variable id="fileList::activeFileList" name="activeFileList">
+    <brief>needed, as ftw does not allow further arguments but we still want to add the file to different fileLists</brief>
+    <type name="fileList" qualifier="*" ref="fileList::fileList#fileList::fileList" />
+  </variable>
+  <struct name="fileList" ref="fileList::fileList#fileList::fileList">
+    <brief>A fileList is a data structure which stores metadata of a list of files, so they can be compared</brief>
+  </struct>
+  <struct name="fileListEntry" ref="fileList::fileListEntry#fileList::fileListEntry">
+    <brief>A fileListEntry is a element of <ref ref="fileList::fileList#fileList::fileList">fileList</ref> storing the Metadata of a file</brief>
+  </struct>
+  <enum anonymous="yes" id="fileList::ComparisionReturnTypes" name="ComparisionReturnTypes">
+    <brief>return types for comparing two files with <ref ref="fileList#compareEntries">compareEntries</ref>
+    </brief>
+    <enumvalue id="fileList::FilesEqual" name="FilesEqual" value="0" />
+    <enumvalue id="fileList::FilesNotTheSame" name="FilesNotTheSame" value="1" />
+    <enumvalue id="fileList::File1Newer" name="File1Newer" value="2" />
+    <enumvalue id="fileList::File2Newer" name="File2Newer" value="3" />
+    <enumvalue id="fileList::GeneralConfusion" name="GeneralConfusion" value="4" />
+  </enum>
+  <enum anonymous="yes" id="fileList::missingHandling" name="missingHandling">
+    <brief>Options to handle missing Items when creating <ref ref="fileList::fileList#fileList::fileList">fileList</ref>s with <ref ref="fileList#createFileLists">createFileLists</ref>
+    </brief>
+    <enumvalue id="fileList::deleteOnHost" name="deleteOnHost" value="0" />
+    <enumvalue id="fileList::deleteOnRemote" name="deleteOnRemote" value="1" />
+    <enumvalue id="fileList::mergeEverything" name="mergeEverything" value="2" />
+    <enumvalue id="fileList::ask" name="ask" value="3" />
+  </enum>
+  <function id="addDirname" name="addDirname">
+    <brief> Prepends the given Dirname to all filenames in the filelist</brief>
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+    <argument id="addDirname::fL" name="fL">
+      <doc>fileList to add the dirname</doc>
+      <type name="fileList" qualifier="*" ref="fileList::fileList#fileList::fileList" />
+    </argument>
+    <argument id="addDirname::dirname" name="dirname">
+      <doc>string which is prepended to all elements of <ref ref="fileList#addDirname::fL">fL</ref></doc>
+      <type builtin="yes" name="char" qualifier=" const *" />
+    </argument>
+  </function>
+  <function id="addFile" name="addFile">
+    <brief> Adds a file to a fileList</brief>
+    <return>
+      <doc>-1 on error 0 otherwise</doc>
+      <type builtin="yes" name="int" />
+    </return>
+    <argument id="addFile::fL" name="fL">
+      <doc>the file list where to add the filewalker</doc>
+      <type name="fileList" qualifier="*" ref="fileList::fileList#fileList::fileList" />
+    </argument>
+    <argument id="addFile::index" name="index">
+      <doc>location in the <ref ref="fileList::fileList#fileList::fileList">fileList</ref> where to store the element</doc>
+      <type builtin="yes" name="unsigned int" qualifier=" const" />
+    </argument>
+    <argument id="addFile::name" name="name">
+      <doc>the name of the file to be added</doc>
+      <type builtin="yes" name="char" qualifier=" const *" />
+    </argument>
+    <argument id="addFile::timestamp" name="timestamp">
+      <doc>the timestamp of the file to be added</doc>
+      <type name="time_t" />
+    </argument>
+    <argument id="addFile::size" name="size">
+      <doc>the filesize of the file to be added</doc>
+      <type builtin="yes" name="int" />
+    </argument>
+  </function>
+  <function id="compareEntries" name="compareEntries">
+    <brief> Compares two fileListEntries.</brief>
+    <doc>Use for comparing two lists. Finds same file by filename. Decision is based on timestamp and hash
+
+</doc>
+    <return>
+      <doc>information, which entry is newer, or are they the same or totally different</doc>
+      <type name="ComparisionReturnTypes" ref="fileList#fileList::ComparisionReturnTypes" />
+    </return>
+    <argument id="compareEntries::entry1" name="entry1">
+      <doc>first entry to compares</doc>
+      <type name="fileListEntry" qualifier="*" ref="fileList::fileListEntry#fileList::fileListEntry" />
+    </argument>
+    <argument id="compareEntries::entry2" name="entry2">
+      <doc>second entry to compare</doc>
+      <type name="fileListEntry" qualifier="*" ref="fileList::fileListEntry#fileList::fileListEntry" />
+    </argument>
+  </function>
+  <function id="compareMD5" name="compareMD5">
+    <brief> compares two MD5 Hashes, returns 0 if equal, else -1</brief>
+    <return>
+      <doc>0 when hashes equal, -1 when not</doc>
+      <type builtin="yes" name="int" />
+    </return>
+    <argument id="compareMD5::hash1" name="hash1">
+      <doc>The first hash</doc>
+      <type builtin="yes" name="unsigned char" qualifier=" const *" />
+    </argument>
+    <argument id="compareMD5::hash2" name="hash2">
+      <doc>The second hash</doc>
+      <type builtin="yes" name="unsigned char" qualifier=" const *" />
+    </argument>
+  </function>
+  <function id="createFileList" name="createFileList">
+    <brief> creates a file list from the given filepath and stores it in fL</brief>
+    <return>
+      <doc>-1 on Error, 0 else</doc>
+      <type builtin="yes" name="int" />
+    </return>
+    <argument id="createFileList::filepath" name="filepath">
+      <doc>parent directory to start searching for filesize</doc>
+      <type builtin="yes" name="char" qualifier=" const *" />
+    </argument>
+    <argument id="createFileList::fL" name="fL">
+      <doc><ref ref="fileList::fileList#fileList::fileList">fileList</ref> to store the file information information</doc>
+      <type name="fileList" qualifier="*" ref="fileList::fileList#fileList::fileList" />
+    </argument>
+  </function>
+  <function id="createFileLists" name="createFileLists">
+    <brief> Main logic of the programm.</brief>
+    <doc>creates sendList, recieveList, deleteRemoteList and deletionList from hostFiles and remoteFiles.
+</doc>
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+    <argument id="createFileLists::sendList" name="sendList">
+      <doc>list of files to transfer from client to server</doc>
+      <type name="fileList" qualifier="*" ref="fileList::fileList#fileList::fileList" />
+    </argument>
+    <argument id="createFileLists::recieveList" name="recieveList">
+      <doc>list of files to transfer from server to client</doc>
+      <type name="fileList" qualifier="*" ref="fileList::fileList#fileList::fileList" />
+    </argument>
+    <argument id="createFileLists::deletionList" name="deletionList">
+      <doc>list of files to delete on client side</doc>
+      <type name="fileList" qualifier="*" ref="fileList::fileList#fileList::fileList" />
+    </argument>
+    <argument id="createFileLists::deleteRemoteList" name="deleteRemoteList">
+      <doc>list of files to delete on server side</doc>
+      <type name="fileList" qualifier="*" ref="fileList::fileList#fileList::fileList" />
+    </argument>
+    <argument id="createFileLists::hostFiles" name="hostFiles">
+      <doc>fileList of the directory to sync from</doc>
+      <type name="fileList" qualifier="*" ref="fileList::fileList#fileList::fileList" />
+    </argument>
+    <argument id="createFileLists::remoteFiles" name="remoteFiles">
+      <doc>fileList of the directory to sync to</doc>
+      <type name="fileList" qualifier="*" ref="fileList::fileList#fileList::fileList" />
+    </argument>
+    <argument id="createFileLists::option" name="option">
+      <doc>handling of the files that are not found on one of the devices</doc>
+      <type name="missingHandling" ref="fileList#fileList::missingHandling" />
+    </argument>
+  </function>
+  <function id="createMD5" name="createMD5">
+    <brief>Funtion calculates the MD5 Hash of a given File and prints it.</brief>
+    <doc>uses the MD5 functions from libcrypto.
+
+</doc>
+    <return>
+      <doc>0 on success -1 when file not readable</doc>
+      <type builtin="yes" name="int" />
+    </return>
+    <argument id="createMD5::filename" name="filename">
+      <doc>filename of the file to create the hash from.</doc>
+      <type builtin="yes" name="char" qualifier=" const *" />
+    </argument>
+    <argument id="createMD5::output" name="output">
+      <doc>the buffer, where the hash is stored in.</doc>
+      <type class="array" size="16">
+        <type builtin="yes" name="unsigned char" />
+      </type>
+    </argument>
+  </function>
+  <function id="fileListInit" name="fileListInit">
+    <brief> initializes File list. Allocates new Memory of size 'INCR_STEP_SIZE' and initializes length and index to 0</brief>
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+    <argument id="fileListInit::newFileList" name="newFileList">
+      <doc>Pointer to the file list that should be initialized</doc>
+      <type name="fileList" qualifier="*" ref="fileList::fileList#fileList::fileList" />
+    </argument>
+  </function>
+  <function id="handleFile" name="handleFile">
+    <brief> Function that is executed for every file, the filewalker walks through.</brief>
+    <doc>When 'type' is a file, it gets added to activeFileList.
+setActiveList must be used before
+
+</doc>
+    <return>
+      <doc>0 on success, -1 on error when adding file to filelist</doc>
+      <type builtin="yes" name="int" />
+    </return>
+    <argument id="handleFile::name" name="name">
+      <doc>filename</doc>
+      <type builtin="yes" name="char" qualifier=" const *" />
+    </argument>
+    <argument id="handleFile::status" name="status">
+      <doc>file status e.g. modification time, size, ...</doc>
+      <type name="stat" qualifier=" const *" />
+    </argument>
+    <argument id="handleFile::type" name="type">
+      <doc>filetype from FTW</doc>
+      <type builtin="yes" name="int" />
+    </argument>
+  </function>
+  <function id="printFileList" name="printFileList">
+    <brief> Printing out the File List</brief>
+    <doc>prints all elements of <ref ref="fileList#printFileList::fL">fL</ref> with timestamp, size, name and MD5Hash</doc>
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+    <argument id="printFileList::fL" name="fL">
+      <doc>fileList to print</doc>
+      <type name="fileList" qualifier="*" ref="fileList::fileList#fileList::fileList" />
+    </argument>
+  </function>
+  <function id="removeDirname" name="removeDirname">
+    <brief> Removes the given dirname from all filenames in the filelist</brief>
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+    <argument id="removeDirname::fL" name="fL">
+      <doc>fileList to remove the dirname from</doc>
+      <type name="fileList" qualifier="*" ref="fileList::fileList#fileList::fileList" />
+    </argument>
+    <argument id="removeDirname::dirname" name="dirname">
+      <doc>string which is removed from all elements of <ref ref="fileList#removeDirname::fL">fL</ref></doc>
+      <type builtin="yes" name="char" qualifier=" const *" />
+    </argument>
+  </function>
+  <function id="removeFileList" name="removeFileList">
+    <brief> Delete all Files in a fileList</brief>
+    <return>
+      <doc>-1 on error, 0 else</doc>
+      <type builtin="yes" name="int" />
+    </return>
+    <argument id="removeFileList::fL" name="fL">
+      <doc>fileList to delete</doc>
+      <type name="fileList" qualifier="*" ref="fileList::fileList#fileList::fileList" />
+    </argument>
+    <argument id="removeFileList::prependdir" name="prependdir">
+      <doc>string to prepend to all filenames to change relative filenames to absolutes</doc>
+      <type builtin="yes" name="char" qualifier=" const *" />
+    </argument>
+  </function>
+  <function id="setActiveList" name="setActiveList">
+    <brief> Sets the fileList for <ref ref="fileList#createFileList">createFileList</ref>, as function cant pass any more arguments</brief>
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+    <argument id="setActiveList::newFileList" name="newFileList">
+      <doc>Pointer to the fileList that should be marked active</doc>
+      <type name="fileList" qualifier="*" ref="fileList::fileList#fileList::fileList" />
+    </argument>
+  </function>
+</category>

@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='utf-8'?>
+<index xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief>Project Documentation</brief>
+  <doc>REMOTE FILE SYNC
+====================
+
+
+PROJECT DESCRIPTION:
+------------------------
+A Client for Syncing 2 Directories:
+
+### Procedure: ###
+    Inform REMOTE of sync
+    Generating hash list of files on HOST (recoursively, content only, md5 hash)
+    Generating hash list of files on REMOTE (recoursively, content only, md5 hash)
+    Transmitting list from REMOTE to HOST (name, path, modified date and hash)
+    Comparing the lists on HOST (Sort the lists!)
+        - For each name in List 1 search Name in List 2
+        - Found name in Both: Compare Checksums
+          - Checksums are the same: Discard entry (no sync needed)
+          - Checksums differ: Sync newer one
+        - Not found Name in List 1
+          - Write on lists: Transmit from 1 to 2 OR delete on 2 (depending on Setting)
+        - Same for List 2 / Delete files from List 2 and use remaining files
+          - Write on List: Transmit from 2 to 1 OR delete on 1 (depending on Setting)
+        Afterwards: 4 lists: (maybe interactive see command line param)
+                  1. Files from HOST to REMOTE
+                  2. Files from REMOTE to HOST
+                  3. Files to delete on HOST
+                  4. Files to delete on REMOTE
+    transmit list 2 &amp; 4 to REMOTE
+    delete files &amp; directories deletion list
+    transmit files from HOST to REMOTE      ----\_____simultaneous
+    transmit files from REMOTE to HOST      ----/
+      - Manually correct time stamps
+    Done :-)
+
+### Cases: ###
+* File has same signature on both PC
+  -&gt; Do Nothing 
+* File has different signature on PCs
+  -&gt; Copy the newer one to the other PC1 
+* File is not existing on one PC
+  -&gt; depends on command line Parameter, default: ask for each file (yes, no, yes to all, yes to current directory)
+
+
+### BONUS GOALS: ###
+- Command Line Parser
+- IPv4 and IPv6 Support
+
+</doc>
+  <category name="fileList" ref="fileList#fileList">
+    <struct name="fileList" ref="fileList::fileList#fileList::fileList">
+      <brief>A fileList is a data structure which stores metadata of a list of files, so they can be compared</brief>
+    </struct>
+    <struct name="fileListEntry" ref="fileList::fileListEntry#fileList::fileListEntry">
+      <brief>A fileListEntry is a element of <ref ref="fileList::fileList#fileList::fileList">fileList</ref> storing the Metadata of a file</brief>
+    </struct>
+  </category>
+  <category name="NetworkFunctions" ref="NetworkFunctions#NetworkFunctions" />
+  <category name="Server" ref="Server#Server">
+    <brief>Server Documentation</brief>
+  </category>
+  <category name="SyncingClient" ref="SyncingClient#SyncingClient">
+    <brief>Client Documentation</brief>
+  </category>
+  <report name="Documentation generator" ref="report" />
+</index>

@@ -24,7 +24,7 @@ DEPS := $(addsuffix .d,$(BUILD_BASE))
 OBJS := $(addsuffix .o,$(BUILD_BASE))
 
 
-.PHONY: all clean
+.PHONY: all clean doc
 .SUFFIXES:
 .SECONDARY:
 
@@ -54,6 +54,9 @@ $(BUILD_DIR)/%.d: $(SRC_DIR)/%.cpp | build
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | build
 				@echo "----> compiling $<"
 				$(GXX) $(CXXFLAGS) $(INC_DIRS) -c $< -o $@
+
+doc:
+				cldoc generate $(INC_DIRS) $(CCFLAGS) -xc -- --output html/ src/* inc/* --report --language C --merge docs
 
 clean:
 				@echo "----> Cleaning up"

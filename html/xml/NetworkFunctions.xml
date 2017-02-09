@@ -1,0 +1,201 @@
+<?xml version='1.0' encoding='utf-8'?>
+<category id="NetworkFunctions" name="NetworkFunctions" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <variable id="NetworkFunctions::addresses" name="addresses">
+    <type name="addrinfo" qualifier="*" />
+  </variable>
+  <variable id="NetworkFunctions::hints" name="hints">
+    <brief>The Functions for handeling the networking</brief>
+    <type name="addrinfo" />
+  </variable>
+  <variable id="NetworkFunctions::p" name="p">
+    <type name="addrinfo" qualifier="*" />
+  </variable>
+  <function id="createSocketListen" name="createSocketListen">
+    <brief> create and connect to a TCP socket</brief>
+    <doc>Uses SO_REUSEPORT and SO_REUSEADDR as sockoptions, so the server can be restarted immideatly
+Works with ipv4 and ipv6
+
+</doc>
+    <return>
+      <doc>the created socket</doc>
+      <type builtin="yes" name="int" />
+    </return>
+    <argument id="createSocketListen::portnum" name="portnum">
+      <doc>Port to create the socket on</doc>
+      <type builtin="yes" name="char" qualifier=" const *" />
+    </argument>
+  </function>
+  <function id="createSocketSending" name="createSocketSending">
+    <brief> create a socet to send</brief>
+    <return>
+      <doc>the created socket</doc>
+      <type builtin="yes" name="int" />
+    </return>
+    <argument id="createSocketSending::ipaddr" name="ipaddr">
+      <doc>the ipaddr of the recieving socket. Names like "localhost" work as well</doc>
+      <type builtin="yes" name="char" qualifier=" const *" />
+    </argument>
+    <argument id="createSocketSending::portnum" name="portnum">
+      <doc>port of the recieving socket
+Works with ipv4 and ipv6</doc>
+      <type builtin="yes" name="char" qualifier=" const *" />
+    </argument>
+  </function>
+  <function id="recieveBuf" name="recieveBuf">
+    <brief> Helper Function: recieves chars on the socket and prints them</brief>
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+    <argument id="recieveBuf::sock" name="sock">
+      <doc>socket to recieve on</doc>
+      <type builtin="yes" name="int" />
+    </argument>
+  </function>
+  <function id="recieveFile" name="recieveFile">
+    <brief> recieves files and writes them to filesystem</brief>
+    <doc>revieves first the filesize and mallocs space for the file in memory, then revieves the
+filename and the timestamp, and afterwards the file content. Then it stores the file to the filesystem
+</doc>
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+    <argument id="recieveFile::sock" name="sock">
+      <doc>the socket to recieve from</doc>
+      <type builtin="yes" name="int" />
+    </argument>
+    <argument id="recieveFile::prependdir" name="prependdir">
+      <doc>parent directory name to save the relative directories in</doc>
+      <type builtin="yes" name="char" qualifier=" const *" />
+    </argument>
+  </function>
+  <function id="recieveList" name="recieveList">
+    <brief> recieve a <ref ref="fileList#fileList">fileList</ref>
+    </brief>
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+    <argument id="recieveList::sock" name="sock">
+      <doc>the socket to recieve from</doc>
+      <type builtin="yes" name="int" />
+    </argument>
+    <argument id="recieveList::fl" name="fl">
+      <doc>pointer to the <ref ref="fileList#fileList">fileList</ref> where to store the recieved list</doc>
+      <type name="fileList" qualifier="*" ref="fileList::fileList#fileList::fileList" />
+    </argument>
+  </function>
+  <function id="recieveListFiles" name="recieveListFiles">
+    <brief> recieves a number of files and saves it</brief>
+    <doc>recieves the length of the list, then recieves length times a file with <ref ref="NetworkFunctions#recieveFile">recieveFile</ref>
+</doc>
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+    <argument id="recieveListFiles::sock" name="sock">
+      <doc>the socket to recieve from</doc>
+      <type builtin="yes" name="int" />
+    </argument>
+    <argument id="recieveListFiles::prependdir" name="prependdir">
+      <doc>parent directory name to save the relative directories inet</doc>
+      <type builtin="yes" name="char" qualifier=" const *" />
+    </argument>
+  </function>
+  <function id="recieveSync" name="recieveSync">
+    <brief> check if a correct SYNC request was sent</brief>
+    <return>
+      <doc>0 if "START_SYNC" was recieved, -1 if not</doc>
+      <type builtin="yes" name="int" />
+    </return>
+    <argument id="recieveSync::sock" name="sock">
+      <doc>socket to read from</doc>
+      <type builtin="yes" name="int" />
+    </argument>
+  </function>
+  <function id="sendBuf" name="sendBuf">
+    <brief> sends buffer, make sure all parts are sent</brief>
+    <return>
+      <doc>-1 on error, otherwise the number of send bytes</doc>
+      <type builtin="yes" name="int" />
+    </return>
+    <argument id="sendBuf::sock" name="sock">
+      <doc>the socket to semd to</doc>
+      <type builtin="yes" name="int" />
+    </argument>
+    <argument id="sendBuf::buffer" name="buffer">
+      <doc>the buffer to send</doc>
+      <type builtin="yes" name="char" qualifier="*" />
+    </argument>
+    <argument id="sendBuf::length" name="length">
+      <doc>the length of the buffer</doc>
+      <type builtin="yes" name="int" />
+    </argument>
+  </function>
+  <function id="sendFile" name="sendFile">
+    <brief> sends file with metadata</brief>
+    <doc>uses <ref ref="NetworkFunctions#sendFileContent">sendFileContent</ref> but also sends the meta information and changes relative filename to absolute
+</doc>
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+    <argument id="sendFile::sock" name="sock">
+      <doc>the socket to recieve from</doc>
+      <type builtin="yes" name="int" />
+    </argument>
+    <argument id="sendFile::fle" name="fle">
+      <doc>the 'fileListEntry' to send</doc>
+      <type name="fileListEntry" qualifier="*" ref="fileList::fileListEntry#fileList::fileListEntry" />
+    </argument>
+    <argument id="sendFile::prependdir" name="prependdir">
+      <doc>parent directory name to change relative directories in fl to absolutes</doc>
+      <type builtin="yes" name="char" qualifier=" const *" />
+    </argument>
+  </function>
+  <function id="sendFileContent" name="sendFileContent">
+    <brief> sends the content of a single file, used by <ref ref="NetworkFunctions#sendFile">sendFile</ref>
+    </brief>
+    <return>
+      <doc>-1 on error, 0 else</doc>
+      <type builtin="yes" name="int" />
+    </return>
+    <argument id="sendFileContent::sock" name="sock">
+      <doc>the socket to recieve from</doc>
+      <type builtin="yes" name="int" />
+    </argument>
+    <argument id="sendFileContent::filename" name="filename">
+      <doc>the absolute filename of the file to send</doc>
+      <type builtin="yes" name="char" qualifier=" const *" />
+    </argument>
+  </function>
+  <function id="sendList" name="sendList">
+    <brief> sends a <ref ref="fileList#fileList">fileList</ref>
+    </brief>
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+    <argument id="sendList::sock" name="sock">
+      <doc>the socket to send to</doc>
+      <type builtin="yes" name="int" />
+    </argument>
+    <argument id="sendList::fl" name="fl">
+      <doc>the <ref ref="fileList#fileList">fileList</ref> to send</doc>
+      <type name="fileList" qualifier="*" ref="fileList::fileList#fileList::fileList" />
+    </argument>
+  </function>
+  <function id="sendListFiles" name="sendListFiles">
+    <brief> sends all files from a given file list</brief>
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+    <argument id="sendListFiles::sock" name="sock">
+      <doc>the socket to send todo</doc>
+      <type builtin="yes" name="int" />
+    </argument>
+    <argument id="sendListFiles::fl" name="fl">
+      <doc>the <ref ref="fileList#fileList">fileList</ref> to send</doc>
+      <type name="fileList" qualifier="*" ref="fileList::fileList#fileList::fileList" />
+    </argument>
+    <argument id="sendListFiles::prependdir" name="prependdir">
+      <doc>parent directory name to change relative directories in <ref ref="NetworkFunctions#sendListFiles::fl">fl</ref> to absolutes</doc>
+      <type builtin="yes" name="char" qualifier=" const *" />
+    </argument>
+  </function>
+</category>

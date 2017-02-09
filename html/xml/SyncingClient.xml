@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<category id="SyncingClient" name="SyncingClient" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief>Client Documentation</brief>
+  <doc>Client Program
+==================
+
+The Client connects to the Remote to sync files. 
+The main program logic is implemented here.
+
+Usage:
+-------
+`./sync [-p PORTNUM] [-h] [-d DELETE_OPTION] /path/to/localdir REMOTEIP/path/to/remotedir`
+
+Procedure
+-----------
+
+1. Sends Sync request to <ref ref="Server#Server">Server</ref>
+1. Sends path of remote directoy to <ref ref="Server#Server">Server</ref>
+1. Recieve file List from <ref ref="Server#Server">Server</ref> with the content of remote directoy
+1. Create the fileLists filesToDelete, filesToTransfer, remoteFilesToDelete and remoteFilesToTransfer
+1. Transfer remoteFilesToDelete and remoteFilesToTransfer to <ref ref="Server#Server">Server</ref>
+1. Send files of filesToTransfer to <ref ref="Server#Server">Server</ref>
+1. Delete files of filesToDelete
+1. Recieve files of remoteFilesToTransfer from <ref ref="Server#Server">Server</ref>
+
+Done!</doc>
+  <variable id="SyncingClient::hostdirectory" name="hostdirectory">
+    <type builtin="yes" name="char" qualifier="*" />
+  </variable>
+  <variable id="SyncingClient::missingOptions" name="missingOptions">
+    <brief>command line parameters</brief>
+    <type name="missingHandling" ref="fileList#fileList::missingHandling" />
+  </variable>
+  <variable id="SyncingClient::remotedirectory" name="remotedirectory">
+    <type builtin="yes" name="char" qualifier="*" />
+  </variable>
+  <variable id="SyncingClient::remoteFilesToDelete" name="remoteFilesToDelete">
+    <type name="fileList" ref="fileList::fileList#fileList::fileList" />
+  </variable>
+  <variable id="SyncingClient::remoteFilesToTransfer" name="remoteFilesToTransfer">
+    <type name="fileList" ref="fileList::fileList#fileList::fileList" />
+  </variable>
+  <variable id="SyncingClient::remoteip" name="remoteip">
+    <type builtin="yes" name="char" qualifier="*" />
+  </variable>
+</category>

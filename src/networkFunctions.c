@@ -76,11 +76,10 @@ int createSocketSending(const char* ipaddr, const char* portnum) {
 }
 
 
-int recieveBuf(int sock) {
+void recieveBuf(int sock) {
 	char buff[1024];
 	recv(sock, buff, sizeof(buff), 0);
   printf("Buffer:\n %s\n", buff);
-	return 0;
 }
 
 

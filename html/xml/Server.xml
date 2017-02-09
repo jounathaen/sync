@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='utf-8'?>
+<category id="Server" name="Server" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief>Server Documentation</brief>
+  <doc>SERVER PROGRAM
+===================
+
+The Server Programm runs on the REMOTE and answers the requests of a client.
+
+Usage:
+-------
+`./server [-p PORTNUM] [-h]`
+
+Procedure
+-----------
+
+1. Waits for Sync request (recieve string "START_SYNC")
+1. Recieves Directory name from <ref ref="SyncingClient#SyncingClient">SyncingClient</ref>
+1. Creates <ref ref="fileList#fileList">fileList</ref> from the recieved directory name
+1. Sends this <ref ref="fileList#fileList">fileList</ref>
+1. Recieves <ref ref="Server#Server::filesToDelete">filesToDelete</ref> and <ref ref="Server#Server::filesToTransfer">filesToTransfer</ref> from <ref ref="SyncingClient#SyncingClient">SyncingClient</ref>
+1. Deletes Files which are in <ref ref="Server#Server::filesToDelete">filesToDelete</ref>
+1. Recieves files from <ref ref="SyncingClient#SyncingClient">SyncingClient</ref> 
+1. Sends Files which are in <ref ref="Server#Server::filesToTransfer">filesToTransfer</ref>
+1. Shutdown connection and start again from 1.)</doc>
+  <variable id="Server::filesToDelete" name="filesToDelete">
+    <type name="fileList" ref="fileList::fileList#fileList::fileList" />
+  </variable>
+  <variable id="Server::filesToTransfer" name="filesToTransfer">
+    <type name="fileList" ref="fileList::fileList#fileList::fileList" />
+  </variable>
+  <variable id="Server::ownFiles" name="ownFiles">
+    <type name="fileList" ref="fileList::fileList#fileList::fileList" />
+  </variable>
+  <variable id="Server::port" name="port">
+    <type builtin="yes" name="char" qualifier="*" />
+  </variable>
+  <variable id="Server::remoteFiles" name="remoteFiles">
+    <type name="fileList" ref="fileList::fileList#fileList::fileList" />
+  </variable>
+  <function id="main" name="main">
+    <brief>The server main loop</brief>
+    <return>
+      <type builtin="yes" name="int" />
+    </return>
+    <argument id="main::argc" name="argc">
+      <type builtin="yes" name="int" />
+    </argument>
+    <argument id="main::argv" name="argv">
+      <type builtin="yes" name="char" qualifier="**" />
+    </argument>
+  </function>
+  <function id="printUsage" name="printUsage">
+    <brief>prints the a small message about the use of the program</brief>
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+  </function>
+</category>

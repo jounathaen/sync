@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='utf-8'?>
+<report id="report" title="Documention generator" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <doc>
+This page provides a documentation coverage report. Any undocumented symbols
+are reported here together with the location of where you should document them.
+
+This report contains the following sections:
+
+1. [Coverage](#report/coverage): The documented symbols coverage.
+2. [Arguments](#report/arguments): Errors about undocumented, misspelled function arguments and
+return values.
+3. [References](#report/references): Unresolved cross references.
+</doc>
+  <coverage>
+    <type documented="2" name="category" undocumented="2">
+      <undocumented id="NetworkFunctions" name="NetworkFunctions" />
+      <undocumented id="fileList" name="fileList" />
+    </type>
+    <type documented="27" name="function" undocumented="0" />
+    <type documented="2" name="struct" undocumented="0" />
+    <type documented="2" name="enum" undocumented="0" />
+    <type documented="0" name="enumvalue" undocumented="9">
+      <undocumented id="fileList::File1Newer" name="File1Newer">
+        <location column="3" file="inc/fileList.h" line="45" />
+      </undocumented>
+      <undocumented id="fileList::File2Newer" name="File2Newer">
+        <location column="3" file="inc/fileList.h" line="46" />
+      </undocumented>
+      <undocumented id="fileList::FilesEqual" name="FilesEqual">
+        <location column="3" file="inc/fileList.h" line="43" />
+      </undocumented>
+      <undocumented id="fileList::FilesNotTheSame" name="FilesNotTheSame">
+        <location column="3" file="inc/fileList.h" line="44" />
+      </undocumented>
+      <undocumented id="fileList::GeneralConfusion" name="GeneralConfusion">
+        <location column="3" file="inc/fileList.h" line="47" />
+      </undocumented>
+      <undocumented id="fileList::ask" name="ask">
+        <location column="3" file="inc/fileList.h" line="55" />
+      </undocumented>
+      <undocumented id="fileList::deleteOnHost" name="deleteOnHost">
+        <location column="3" file="inc/fileList.h" line="52" />
+      </undocumented>
+      <undocumented id="fileList::deleteOnRemote" name="deleteOnRemote">
+        <location column="3" file="inc/fileList.h" line="53" />
+      </undocumented>
+      <undocumented id="fileList::mergeEverything" name="mergeEverything">
+        <location column="3" file="inc/fileList.h" line="54" />
+      </undocumented>
+    </type>
+    <type documented="3" name="field" undocumented="4">
+      <undocumented id="fileList::fileListEntry::filehash" name="filehash">
+        <location column="3" file="inc/fileList.h" line="22" />
+        <location column="3" file="inc/fileList.h" line="22" />
+      </undocumented>
+      <undocumented id="fileList::fileListEntry::filename" name="filename">
+        <location column="3" file="inc/fileList.h" line="21" />
+        <location column="3" file="inc/fileList.h" line="21" />
+      </undocumented>
+      <undocumented id="fileList::fileListEntry::filesize" name="filesize">
+        <location column="3" file="inc/fileList.h" line="24" />
+        <location column="3" file="inc/fileList.h" line="24" />
+      </undocumented>
+      <undocumented id="fileList::fileListEntry::timestamp" name="timestamp">
+        <location column="3" file="inc/fileList.h" line="23" />
+        <location column="3" file="inc/fileList.h" line="23" />
+      </undocumented>
+    </type>
+    <type documented="3" name="variable" undocumented="12">
+      <undocumented id="NetworkFunctions::addresses" name="addresses">
+        <location column="1" file="inc/networkFunctions.h" line="22" />
+      </undocumented>
+      <undocumented id="NetworkFunctions::p" name="p">
+        <location column="1" file="inc/networkFunctions.h" line="22" />
+      </undocumented>
+      <undocumented id="Server::filesToDelete" name="filesToDelete">
+        <location column="1" file="inc/server.h" line="13" />
+        <location column="1" file="inc/sync.h" line="12" />
+      </undocumented>
+      <undocumented id="Server::filesToTransfer" name="filesToTransfer">
+        <location column="1" file="inc/server.h" line="13" />
+        <location column="1" file="inc/sync.h" line="12" />
+      </undocumented>
+      <undocumented id="Server::ownFiles" name="ownFiles">
+        <location column="1" file="inc/server.h" line="13" />
+        <location column="1" file="inc/sync.h" line="12" />
+      </undocumented>
+      <undocumented id="Server::port" name="port">
+        <location column="1" file="inc/server.h" line="14" />
+        <location column="1" file="inc/sync.h" line="20" />
+      </undocumented>
+      <undocumented id="Server::remoteFiles" name="remoteFiles">
+        <location column="1" file="inc/server.h" line="13" />
+        <location column="1" file="inc/sync.h" line="12" />
+      </undocumented>
+      <undocumented id="SyncingClient::hostdirectory" name="hostdirectory">
+        <location column="1" file="inc/sync.h" line="17" />
+      </undocumented>
+      <undocumented id="SyncingClient::remoteFilesToDelete" name="remoteFilesToDelete">
+        <location column="1" file="inc/sync.h" line="12" />
+      </undocumented>
+      <undocumented id="SyncingClient::remoteFilesToTransfer" name="remoteFilesToTransfer">
+        <location column="1" file="inc/sync.h" line="12" />
+      </undocumented>
+      <undocumented id="SyncingClient::remotedirectory" name="remotedirectory">
+        <location column="1" file="inc/sync.h" line="18" />
+      </undocumented>
+      <undocumented id="SyncingClient::remoteip" name="remoteip">
+        <location column="1" file="inc/sync.h" line="19" />
+      </undocumented>
+    </type>
+  </coverage>
+  <arguments>
+    <function id="main" name="main">
+      <location column="1" file="inc/server.h" line="17" />
+      <undocumented-return />
+      <undocumented name="argc" />
+      <undocumented name="argv" />
+    </function>
+  </arguments>
+  <references />
+</report>
