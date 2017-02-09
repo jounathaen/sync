@@ -41,15 +41,15 @@ Done :-)
 ### Command line Parameters: ###
   `-d   --delete [OPTION]`
 
-  OPTION is:
-  `h, host`: 
-    don't ask, delete all files on HOST, when these files are not present on REMOTE
-  `r, remote`: 
-    don't ask, delete all files on REMOTE, when these files are not present on HOST
-  `m, merge`: 
-    don't delete anything, files that are not present on HOST will get copied from REMOTE and vice versa
-  `a, ask`:
-    ask for every file, to remove on HOST/REMOTE or keep both (DEFAULT OPTION)
+  OPTION is:  
+  `h, host`:   
+    don't ask, delete all files on HOST, when these files are not present on REMOTE  
+  `r, remote`:  
+    don't ask, delete all files on REMOTE, when these files are not present on HOST  
+  `m, merge`:  
+    don't delete anything, files that are not present on HOST will get copied from REMOTE and vice versa  
+  `a, ask`:  
+    ask for every file, to remove on HOST/REMOTE or keep both (DEFAULT OPTION)  
     
   `-h   --help`
   prints a small usage text
