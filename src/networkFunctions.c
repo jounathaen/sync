@@ -159,7 +159,6 @@ void recieveFile(int sock, const char * prependdir){
   fwrite(buff, filesize, 1, writefile);
   printf("wrote to fileSystem. Filename: %s Directory %s\n\n", namebuff, dirbuff);
   fclose(writefile);
-  //TODO modify timestamp
   struct utimbuf timebuff = { 0, timestamp};
   utime(namebuff, &timebuff);
   free(buff);

@@ -25,7 +25,6 @@ void printUsage(){
 
 
 int main (int argc, char** argv){
-  // TODO command line Parameters PORTNUM!!!
   signal(SIGINT, intterruphandler);
   int c;
   struct option longopts[] = {
