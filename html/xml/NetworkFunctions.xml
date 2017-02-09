@@ -4,7 +4,6 @@
     <type name="addrinfo" qualifier="*" />
   </variable>
   <variable id="NetworkFunctions::hints" name="hints">
-    <brief>The Functions for handeling the networking</brief>
     <type name="addrinfo" />
   </variable>
   <variable id="NetworkFunctions::p" name="p">

@@ -5,38 +5,39 @@ Project Documentation
 REMOTE FILE SYNC
 ====================
 
+A Client for Syncing 2 Directories:
 
 PROJECT DESCRIPTION:
 ------------------------
 A Client for Syncing 2 Directories:
 
 ### Procedure: ###
-    Inform REMOTE of sync
-    Generating hash list of files on HOST (recoursively, content only, md5 hash)
-    Generating hash list of files on REMOTE (recoursively, content only, md5 hash)
-    Transmitting list from REMOTE to HOST (name, path, modified date and hash)
-    Comparing the lists on HOST (Sort the lists!)
-        - For each name in List 1 search Name in List 2
-        - Found name in Both: Compare Checksums
-          - Checksums are the same: Discard entry (no sync needed)
-          - Checksums differ: Sync newer one
-        - Not found Name in List 1
-          - Write on lists: Transmit from 1 to 2 OR delete on 2 (depending on Setting)
-        - Same for List 2 / Delete files from List 2 and use remaining files
-          - Write on List: Transmit from 2 to 1 OR delete on 1 (depending on Setting)
-        Afterwards: 4 lists: (maybe interactive see command line param)
-                  1. Files from HOST to REMOTE
-                  2. Files from REMOTE to HOST
-                  3. Files to delete on HOST
-                  4. Files to delete on REMOTE
-    transmit list 2 & 4 to REMOTE
-    delete files & directories deletion list
-    transmit files from HOST to REMOTE      ----\_____simultaneous
-    transmit files from REMOTE to HOST      ----/
-      - Manually correct time stamps
-    Done :-)
+- Inform REMOTE of sync
+- Generating hash list of files on HOST (recursively, content only, md5 hash)
+- Generating hash list of files on REMOTE (recursively, content only, md5 hash)
+- Transmitting list from REMOTE to HOST (name, path, modified date and hash)
+- Comparing the lists on HOST 
+  - For each name in List 1 search Name in List 2
+  - Found name in both lists: Compare checksums
+    - Checksums are the same: Go to next entry (no sync needed)
+    - Checksums differ: Sync newer one
+  - Not found Name in List 1
+    - Write on lists: Transmit from HOST to REMOTE OR delete on HOST (depending on Setting)
+  - Same for List 2 
+    - Write on List: Transmit from REMOTE to HOST OR delete on REMOTE (depending on Setting)
+  Afterwards: 4 lists: (maybe interactive see command line param)
+            1. Files to transfer from HOST to REMOTE
+            2. Files to transfer from REMOTE to HOST
+            3. Files to delete on HOST
+            4. Files to delete on REMOTE
+- transmit list 2 & 4 to REMOTE
+- delete files & directories deletion list
+- transmit files from HOST to REMOTE
+- transmit files from REMOTE to HOST
+- Manually correct time stamps
+Done :-)
 
-### Cases: ###
+### Possible File Collisions: ###
 * File has same signature on both PC
   -> Do Nothing 
 * File has different signature on PCs
@@ -48,5 +49,8 @@ A Client for Syncing 2 Directories:
 ### BONUS GOALS: ###
 - Command Line Parser
 - IPv4 and IPv6 Support
+- IPv4 and IPv6 Support
+- html documentation with cldoc (https://github.com/jessevdk/cldoc)
+- version contoll with git on github (https://github.com/jounathaen/sync)
 
 

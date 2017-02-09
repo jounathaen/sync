@@ -16,7 +16,6 @@
 #include <utime.h>
 
 /* cldoc:begin-category(NetworkFunctions) */
-/* The Functions for handeling the networking */
 
 struct addrinfo hints;
 struct addrinfo *addresses, *p;

@@ -66,12 +66,15 @@ return values.
         <location column="3" file="inc/fileList.h" line="23" />
       </undocumented>
     </type>
-    <type documented="3" name="variable" undocumented="12">
+    <type documented="2" name="variable" undocumented="13">
       <undocumented id="NetworkFunctions::addresses" name="addresses">
-        <location column="1" file="inc/networkFunctions.h" line="22" />
+        <location column="1" file="inc/networkFunctions.h" line="21" />
+      </undocumented>
+      <undocumented id="NetworkFunctions::hints" name="hints">
+        <location column="1" file="inc/networkFunctions.h" line="20" />
       </undocumented>
       <undocumented id="NetworkFunctions::p" name="p">
-        <location column="1" file="inc/networkFunctions.h" line="22" />
+        <location column="1" file="inc/networkFunctions.h" line="21" />
       </undocumented>
       <undocumented id="Server::filesToDelete" name="filesToDelete">
         <location column="1" file="inc/server.h" line="13" />
