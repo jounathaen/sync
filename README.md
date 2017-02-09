@@ -26,7 +26,7 @@ A Client for Syncing 2 Directories:
     - Write on lists: Transmit from HOST to REMOTE OR delete on HOST (depending on Setting)
   - Same for List 2 
     - Write on List: Transmit from REMOTE to HOST OR delete on REMOTE (depending on Setting)
-  Afterwards: 4 lists: (maybe interactive see command line param)
+  - Afterwards: 4 lists: (maybe interactive see command line param)
             1. Files to transfer from HOST to REMOTE
             2. Files to transfer from REMOTE to HOST
             3. Files to delete on HOST
